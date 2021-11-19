@@ -19,9 +19,8 @@ git clone -b dev https://github.com/bugsounet/MMM-YouTube
 {
   module: "MMM-YouTube",
   config: {
-    fullscreen: false,
-    videoID: "RBSZH42a-Kw", // Big Wild - Joypunks
-    // "sOnqjkJTMaA" thriller
+    fullscreen: false, // fullscreen or not ?
+    videoID: "RBSZH42a-Kw", // [Big Wild - Joypunks], // "sOnqjkJTMaA", [thriller ... for testing] or your own youtube VideoID
   }
 },
 ```
