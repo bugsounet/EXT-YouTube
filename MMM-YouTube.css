@@ -6,9 +6,19 @@
   height: 100%;
   border: none;
 }
+
 #YT_WINDOW {
   width:80vw;
   height:80vh;
   position: relative;
   border: none;
+}
+
+#YT_WINDOW.hidden {
+   display:none;
+}
+
+.fullscreen #YT_WINDOW {
+  width: 100vw;
+  height: 100vh;
 }
