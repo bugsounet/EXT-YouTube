@@ -15,23 +15,32 @@ Module.register("MMM-YouTube", {
     videoID: "sOnqjkJTMaA", //"Zi_XLOBDo_Y",
     fullscreen: false,
     width: "800px",
-    height: "600px",
+    height: "600px"
   },
 
   start: function() {
-    if (this.config.fullscreen) this.data.position= "fullscreen_above"
+    //override user set !
+    if (this.config.fullscreen) {
+      this.data.header = undefined
+      this.data.position= "fullscreen_above"
+    }
     else {
-      this.data.header = "\/!\\ @bugsounet YouTube Sub-Module Testing \/!\\"
+      this.data.header = "@bugsounet YouTube Sub-Module Testing"
       this.data.position= "top_center"
     }
     if (this.config.debug) logYT = (...args) => { console.log("[YT]", ...args) }
     this.sendSocketNotification('INIT', this.config)
+    this.YT = {
+      status: false,
+      ended: false,
+      title: null
+    }
   },
 
   notificationReceived: function(notification, payload) {
     switch (notification) {
       case "DOM_OBJECTS_CREATED":
-        logYT("go")
+        logYT("Go YouTube!")
         break
     }
   },
@@ -45,6 +54,8 @@ Module.register("MMM-YouTube", {
   getDom: function() {
     var wrapper = document.createElement('div')
     wrapper.id = "YT_WINDOW"
+    this.hide(0, {lockString: "YT_LOCKED"})
+    wrapper.className = "hidden"
     if (!this.config.fullscreen) {
       wrapper.style.width = this.config.width
       wrapper.style.height = this.config.height
@@ -55,8 +66,8 @@ Module.register("MMM-YouTube", {
     YT.addEventListener("did-stop-loading", () => {
       logYT("Video Loaded", YT.getURL())
     })
-    YT.addEventListener("console-message", (message) => {
-      logYT(message)
+    YT.addEventListener("console-message", (event) => {
+      this.Rules(event.message)
     })
     YT.addEventListener("message", (message) => {
       logYT("[Message]", message)
@@ -71,8 +82,42 @@ Module.register("MMM-YouTube", {
     ]
   },
 
-  test: function () {
-    logYT("execute")
-  }
+  Rules: function (payload) {
+    logYT("Received:", payload)
+    const tag = payload.split(" ")
+    if (tag[0] == "[YT]") {
+      switch (tag[1]) {
+        case "Status:":
+          this.YT.status= tag[2] === "true" ? true : false
+        break
+        case "Ended:":
+          this.YT.ended= tag[2] === "true" ? true: false
+        break
+        case "Title:":
+          this.YT.title = tag.slice(2).join(" ")
+        break
+      }
+    }
+
+    var YTWindow = document.getElementById("YT_WINDOW")
+    if (this.YT.ended) {
+      if (!this.config.fullscreen) {
+        let YTHeader = document.getElementById(this.identifier).getElementsByClassName("module-header")[0]
+        YTHeader.innerHTML= this.data.header
+      }
+      this.hide(1000, {lockString: "YT_LOCKED"})
+      YTWindow.className = "hidden"
+    }
+    
+    if (this.YT.status) {
+      this.show(1000, {lockString: "YT_LOCKED"})
+      YTWindow.classList.remove("hidden")
+    }
+    
+    if (this.YT.status && this.YT.title && !this.config.fullscreen) {
+      let YTHeader = document.getElementById(this.identifier).getElementsByClassName("module-header")[0]
+      YTHeader.innerText= "Testing YT Video: " + this.YT.title
+    }
+  },
 
 })
