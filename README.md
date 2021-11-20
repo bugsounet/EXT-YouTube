@@ -49,7 +49,11 @@ git clone -b dev https://github.com/bugsounet/MMM-YouTube
  * The module display the title in the Header of the module (not in fullscreen)
  * Should be compatible with rpi3b+ ?
  * hide all modules on fullscreen playing ? (optimize video playback)
-
+ * You can use TelegramBot for send notification
+   * `/notification YT_PLAY sOnqjkJTMaA` will play M. Jackson triller for example
+   * `/notification YT_START` will start the defined video in config
+   * `/notification YT_STOP` will stop the player
+   * 
 # TODO
  * volume callback
  * catch error callback
