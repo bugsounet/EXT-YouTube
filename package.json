@@ -4,12 +4,6 @@
   "rev": "211119-1",
   "description": "YouTube Player",
   "main": "MMM-YouTube.js",
-  "scripts": {
-    "preinstall": "installer/preinstall.sh",
-    "postinstall": "installer/postinstall.sh",
-    "update": "installer/update.sh",
-    "rebuild": "installer/rebuild.sh"
-  },
   "keywords": [
     "magic mirror",
     "module",
