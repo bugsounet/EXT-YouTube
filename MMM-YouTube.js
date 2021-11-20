@@ -15,7 +15,8 @@ Module.register("MMM-YouTube", {
     videoID: "sOnqjkJTMaA", //"Zi_XLOBDo_Y",
     fullscreen: false,
     width: "800px",
-    height: "600px"
+    height: "600px",
+    autoStart: true
   },
 
   start: function() {
@@ -42,6 +43,17 @@ Module.register("MMM-YouTube", {
       case "DOM_OBJECTS_CREATED":
         logYT("Go YouTube!")
         break
+      case "YT_START":
+        let YTWindow = document.getElementById("YT")
+        YT.src= "http://youtube.bugsounet.fr/?id="+this.config.videoID+"&origin="+ this.name + "&seed="+Date.now()
+        break
+      case "YT_PLAY":
+        YT.src= "http://youtube.bugsounet.fr/?id="+payload+"&origin="+ this.name + "&seed="+Date.now()
+        break
+      case "YT_STOP":
+        this.Ended()
+        //YT.src= "about:blank"
+        break
     }
   },
 
@@ -62,11 +74,13 @@ Module.register("MMM-YouTube", {
     }
     var YT = document.createElement('webview')
     YT.id = "YT"
-    YT.src= "http://youtube.bugsounet.fr/?id="+this.config.videoID+"&origin="+ this.name + "&seed="+Date.now()
+    if (this.config.autostart) YT.src= "http://youtube.bugsounet.fr/?id="+this.config.videoID+"&origin="+ this.name + "&seed="+Date.now()
     YT.addEventListener("did-stop-loading", () => {
-      logYT("Video Loaded", YT.getURL())
+      if (YT.getURL() == "about:blank") logYT("Video Ended")
+      else logYT("Video Loaded", YT.getURL())
     })
     YT.addEventListener("console-message", (event) => {
+      if (YT.getURL() == "about:blank") return
       this.Rules(event.message)
     })
     YT.addEventListener("message", (message) => {
@@ -101,12 +115,7 @@ Module.register("MMM-YouTube", {
 
     var YTWindow = document.getElementById("YT_WINDOW")
     if (this.YT.ended) {
-      if (!this.config.fullscreen) {
-        let YTHeader = document.getElementById(this.identifier).getElementsByClassName("module-header")[0]
-        YTHeader.innerHTML= this.data.header
-      }
-      this.hide(1000, {lockString: "YT_LOCKED"})
-      YTWindow.className = "hidden"
+      this.Ended()
     }
     
     if (this.YT.status) {
@@ -120,4 +129,15 @@ Module.register("MMM-YouTube", {
     }
   },
 
+  Ended: function() {
+    var YTWindow = document.getElementById("YT_WINDOW")
+    var YTPlayer = document.getElementById("YT")
+    if (!this.config.fullscreen) {
+      let YTHeader = document.getElementById(this.identifier).getElementsByClassName("module-header")[0]
+      YTHeader.innerHTML= this.data.header
+    }
+    this.hide(1000, {lockString: "YT_LOCKED"})
+    YTWindow.className = "hidden"
+    YTPlayer.src= "about:blank"
+  }
 })
