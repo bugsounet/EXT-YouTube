@@ -74,7 +74,7 @@ Module.register("MMM-YouTube", {
     }
     var YT = document.createElement('webview')
     YT.id = "YT"
-    if (this.config.autostart) YT.src= "http://youtube.bugsounet.fr/?id="+this.config.videoID+"&origin="+ this.name + "&seed="+Date.now()
+    if (this.config.autoStart) YT.src= "http://youtube.bugsounet.fr/?id="+this.config.videoID+"&origin="+ this.name + "&seed="+Date.now()
     YT.addEventListener("did-stop-loading", () => {
       if (YT.getURL() == "about:blank") logYT("Video Ended")
       else logYT("Video Loaded", YT.getURL())
