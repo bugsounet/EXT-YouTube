@@ -1,9 +1,12 @@
 {
   "name": "MMM-YouTube",
-  "version": "0.1.0",
-  "rev": "211120-1",
+  "version": "0.2.0",
+  "rev": "211122-1",
   "description": "YouTube Player",
   "main": "MMM-YouTube.js",
+  "scripts": {
+    "token": "node installer/auth_YouTube.js"
+  },
   "keywords": [
     "magic mirror",
     "module",
@@ -17,5 +20,11 @@
   },
   "bugs": {
     "url": "http://forum.bugsounet.fr"
+  },
+  "dependencies": {
+    "he": "^1.2.0",
+    "open": "^6.4.0",
+    "r-json": "^1.2.10",
+    "youtube-api": "^3.0.1"
   }
 }

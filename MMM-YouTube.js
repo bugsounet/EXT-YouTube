@@ -16,18 +16,19 @@ Module.register("MMM-YouTube", {
     fullscreen: false,
     width: "800px",
     height: "600px",
-    autoStart: true
+    autoStart: true,
+    useSearch: false,
   },
 
   start: function() {
     //override user set !
     if (this.config.fullscreen) {
       this.data.header = undefined
-      this.data.position= "fullscreen_above"
+      this.data.position= "fullscreen_above" // really a good solution? maybe popup is better ?
     }
     else {
-      this.data.header = "@bugsounet YouTube Sub-Module Testing"
-      this.data.position= "top_center"
+      this.data.header = "~@bugsounet~ MMM-YouTube"
+      if (!this.data.position) this.data.position= "top_center"
     }
     if (this.config.debug) logYT = (...args) => { console.log("[YT]", ...args) }
     this.sendSocketNotification('INIT', this.config)
@@ -35,6 +36,11 @@ Module.register("MMM-YouTube", {
       status: false,
       ended: false,
       title: null
+    }
+    this.searchInit= false
+    this.Infos= {
+      displayed: false,
+      buffer: []
     }
   },
 
@@ -52,14 +58,22 @@ Module.register("MMM-YouTube", {
         break
       case "YT_STOP":
         this.Ended()
-        //YT.src= "about:blank"
+        break
+      case "YT_SEARCH":
+        if (!this.searchInit) return
+        if (payload) this.sendSocketNotification("YT_SEARCH", payload)
         break
     }
   },
 
   socketNotificationReceived: function(notification, payload) {
     switch (notification) {
-      // this
+      case "YT_SEARCH_INITIALIZED":
+        this.searchInit= true
+        break
+      case "YT_RESULT":
+        this.notificationReceived("YT_PLAY", payload)
+        break
     }
   },
 
@@ -76,16 +90,23 @@ Module.register("MMM-YouTube", {
     YT.id = "YT"
     if (this.config.autoStart) YT.src= "http://youtube.bugsounet.fr/?id="+this.config.videoID+"&origin="+ this.name + "&seed="+Date.now()
     YT.addEventListener("did-stop-loading", () => {
-      if (YT.getURL() == "about:blank") logYT("Video Ended")
-      else logYT("Video Loaded", YT.getURL())
+      if (YT.getURL() == "about:blank") {
+        logYT("Video Ended")
+        this.broadcastForPir("END")
+      }
+      else {
+        logYT("Video Started")
+        this.broadcastForPir("START")
+      }
     })
     YT.addEventListener("console-message", (event) => {
       if (YT.getURL() == "about:blank") return
       this.Rules(event.message)
     })
-    YT.addEventListener("message", (message) => {
-      logYT("[Message]", message)
+    YT.addEventListener("did-fail-load", (message) => {
+      console.error("[YT][Error]", message.errorDescription)
     })
+
     wrapper.appendChild(YT)
     return wrapper
   },
@@ -114,9 +135,8 @@ Module.register("MMM-YouTube", {
     }
 
     var YTWindow = document.getElementById("YT_WINDOW")
-    if (this.YT.ended) {
-      this.Ended()
-    }
+
+    if (this.YT.ended && !this.YT.status) this.Ended()
     
     if (this.YT.status) {
       this.show(1000, {lockString: "YT_LOCKED"})
@@ -125,7 +145,7 @@ Module.register("MMM-YouTube", {
     
     if (this.YT.status && this.YT.title && !this.config.fullscreen) {
       let YTHeader = document.getElementById(this.identifier).getElementsByClassName("module-header")[0]
-      YTHeader.innerText= "Testing YT Video: " + this.YT.title
+      YTHeader.innerText= this.YT.title
     }
   },
 
@@ -139,5 +159,15 @@ Module.register("MMM-YouTube", {
     this.hide(1000, {lockString: "YT_LOCKED"})
     YTWindow.className = "hidden"
     YTPlayer.src= "about:blank"
+  },
+
+  broadcastForPir: function(status) {
+    if (status == "START") {
+      this.sendNotification("USER_PRESENCE", true)
+      this.sendNotification("SCREEN_LOCK")
+    }
+    else if (status == "END") {
+      this.sendNotification("SCREEN_UNLOCK")
+    }
   }
 })
