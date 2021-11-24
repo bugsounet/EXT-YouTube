@@ -14,20 +14,22 @@ Module.register("MMM-YouTube", {
     debug: false,
     videoID: "sOnqjkJTMaA", //"Zi_XLOBDo_Y",
     fullscreen: false,
-    width: "800px",
-    height: "600px",
+    width: "30vw", //"800px",
+    height: "17vw", //"600px"
     autoStart: true,
     useSearch: false,
+    displayHeader: true
   },
 
   start: function() {
     //override user set !
+    if (this.data.position== "fullscreen_above" || this.data.position== "fullscreen_below") this.config.fullscreen = true
     if (this.config.fullscreen) {
       this.data.header = undefined
-      this.data.position= "fullscreen_above" // really a good solution? maybe popup is better ?
+      this.data.position= "fullscreen_above"
     }
     else {
-      this.data.header = "~@bugsounet~ MMM-YouTube"
+      if (this.config.displayHeader) this.data.header = "~@bugsounet~ MMM-YouTube"
       if (!this.data.position) this.data.position= "top_center"
     }
     if (this.config.debug) logYT = (...args) => { console.log("[YT]", ...args) }
@@ -35,26 +37,24 @@ Module.register("MMM-YouTube", {
     this.YT = {
       status: false,
       ended: false,
-      title: null
+      title: null,
+      running: false
     }
     this.searchInit= false
-    this.Infos= {
-      displayed: false,
-      buffer: []
-    }
   },
 
   notificationReceived: function(notification, payload) {
     switch (notification) {
       case "DOM_OBJECTS_CREATED":
-        logYT("Go YouTube!")
+        logYT("[YT] Go YouTube!")
+        this.YouTube = document.getElementById("YT")
         break
       case "YT_START":
-        let YTWindow = document.getElementById("YT")
-        YT.src= "http://youtube.bugsounet.fr/?id="+this.config.videoID+"&origin="+ this.name + "&seed="+Date.now()
+        this.YouTube.src= "http://youtube.bugsounet.fr/?id="+this.config.videoID+"&origin="+ this.name + "&seed="+Date.now()
         break
       case "YT_PLAY":
-        YT.src= "http://youtube.bugsounet.fr/?id="+payload+"&origin="+ this.name + "&seed="+Date.now()
+        this.YT.title = null
+        this.YouTube.src= "http://youtube.bugsounet.fr/?id="+payload+"&origin="+ this.name + "&seed="+Date.now()
         break
       case "YT_STOP":
         this.Ended()
@@ -90,23 +90,17 @@ Module.register("MMM-YouTube", {
     YT.id = "YT"
     if (this.config.autoStart) YT.src= "http://youtube.bugsounet.fr/?id="+this.config.videoID+"&origin="+ this.name + "&seed="+Date.now()
     YT.addEventListener("did-stop-loading", () => {
-      if (YT.getURL() == "about:blank") {
-        logYT("Video Ended")
-        this.broadcastForPir("END")
-      }
-      else {
-        logYT("Video Started")
-        this.broadcastForPir("START")
-      }
+      if (YT.getURL().includes("about:blank")) logYT("Video Ended")
+      else logYT("Video Started")
     })
     YT.addEventListener("console-message", (event) => {
-      if (YT.getURL() == "about:blank") return
+      if (YT.getURL().includes("about:blank")) return
       this.Rules(event.message)
     })
     YT.addEventListener("did-fail-load", (message) => {
       console.error("[YT][Error]", message.errorDescription)
+      this.Ended()
     })
-
     wrapper.appendChild(YT)
     return wrapper
   },
@@ -119,46 +113,54 @@ Module.register("MMM-YouTube", {
 
   Rules: function (payload) {
     logYT("Received:", payload)
+    var YTWindow = document.getElementById("YT_WINDOW")
     const tag = payload.split(" ")
     if (tag[0] == "[YT]") {
       switch (tag[1]) {
         case "Status:":
           this.YT.status= tag[2] === "true" ? true : false
+          if (this.YT.status && !this.YT.ended) {
+            if (this.YT.running) return
+            this.show(1000, {lockString: "YT_LOCKED"})
+            YTWindow.classList.remove("hidden")
+            this.broadcastForPir("START")
+            this.YT.running = true
+          }
         break
         case "Ended:":
           this.YT.ended= tag[2] === "true" ? true: false
+          if (this.YT.ended) this.Ended()
+          if (this.YT.running) this.YT.running = false
         break
         case "Title:":
           this.YT.title = tag.slice(2).join(" ")
+          if (this.YT.title && !this.config.fullscreen && this.config.displayHeader) {
+            let YTHeader = document.getElementById(this.identifier).getElementsByClassName("module-header")[0]
+            YTHeader.innerText= this.YT.title
+          }
         break
       }
-    }
-
-    var YTWindow = document.getElementById("YT_WINDOW")
-
-    if (this.YT.ended && !this.YT.status) this.Ended()
-    
-    if (this.YT.status) {
-      this.show(1000, {lockString: "YT_LOCKED"})
-      YTWindow.classList.remove("hidden")
-    }
-    
-    if (this.YT.status && this.YT.title && !this.config.fullscreen) {
-      let YTHeader = document.getElementById(this.identifier).getElementsByClassName("module-header")[0]
-      YTHeader.innerText= this.YT.title
     }
   },
 
   Ended: function() {
     var YTWindow = document.getElementById("YT_WINDOW")
     var YTPlayer = document.getElementById("YT")
-    if (!this.config.fullscreen) {
+    if (!this.config.fullscreen && this.config.displayHeader) {
       let YTHeader = document.getElementById(this.identifier).getElementsByClassName("module-header")[0]
       YTHeader.innerHTML= this.data.header
     }
     this.hide(1000, {lockString: "YT_LOCKED"})
     YTWindow.className = "hidden"
-    YTPlayer.src= "about:blank"
+    YTPlayer.src= "about:blank?&seed="+Date.now()
+    this.broadcastForPir("END")
+    // reset YT rules
+    this.YT = {
+      status: false,
+      ended: false,
+      title: null,
+      running: false
+    }
   },
 
   broadcastForPir: function(status) {
