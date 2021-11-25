@@ -113,7 +113,6 @@ Module.register("MMM-YouTube", {
 
   Rules: function (payload) {
     logYT("Received:", payload)
-    var YTWindow = document.getElementById("YT_WINDOW")
     const tag = payload.split(" ")
     if (tag[0] == "[YT]") {
       switch (tag[1]) {
@@ -121,10 +120,7 @@ Module.register("MMM-YouTube", {
           this.YT.status= tag[2] === "true" ? true : false
           if (this.YT.status && !this.YT.ended) {
             if (this.YT.running) return
-            this.show(1000, {lockString: "YT_LOCKED"})
-            YTWindow.classList.remove("hidden")
-            this.broadcastForPir("START")
-            this.YT.running = true
+            this.Started()
           }
         break
         case "Ended:":
@@ -161,6 +157,30 @@ Module.register("MMM-YouTube", {
       title: null,
       running: false
     }
+    if (this.config.fullscreen) this.Showing()
+  },
+
+  Started: function() {
+    if (this.config.fullscreen) this.Hiding()
+    var YTWindow = document.getElementById("YT_WINDOW")
+    this.show(1000, {lockString: "YT_LOCKED"})
+    YTWindow.classList.remove("hidden")
+    this.broadcastForPir("START")
+    this.YT.running = true
+  },
+
+  Hiding: function() {
+    logYT("Hiding all modules")
+    MM.getModules().exceptModule(this).enumerate((module) => {
+      module.hide(1000, {lockString: "YT_LOCKED"})
+    })
+  },
+
+  Showing: function() {
+    logYT("Showing all modules")
+    MM.getModules().exceptModule(this).enumerate((module) => {
+      module.show(1000, {lockString: "YT_LOCKED"})
+    })
   },
 
   broadcastForPir: function(status) {
