@@ -111,6 +111,13 @@ Module.register("MMM-YouTube", {
     ]
   },
 
+  getTranslations: function() {
+    return {
+      en: "translations/en.json",
+      fr: "translations/fr.json"
+    }
+  },
+
   Rules: function (payload) {
     logYT("Received:", payload)
     const tag = payload.split(" ")
@@ -191,5 +198,54 @@ Module.register("MMM-YouTube", {
     else if (status == "END") {
       this.sendNotification("SCREEN_UNLOCK")
     }
-  }
+  },
+
+  /****************************/
+  /*** TelegramBot Commands ***/
+  /****************************/
+  getCommands: function(commander) {
+    commander.add({
+      command: "youtube",
+      description: this.translate("YouTubeDescription"),
+      callback: "tbYoutube"
+    })
+  },
+
+  tbYoutube: function(command, handler) {
+    var query = handler.args
+    if (query) {
+      var args = query.toLowerCase().split(" ")
+      var params = query.split(" ").slice(1).join(" ")
+      switch (args[0]) {
+        case "start":
+          this.notificationReceived("YT_START")
+          handler.reply("TEXT", this.translate("YouTubeStart"))
+          break
+        case "play":
+          if (params) {
+            params = params.split(" ")
+            this.notificationReceived("YT_PLAY", params[0])
+            handler.reply("TEXT", this.translate("YouTubePlay", { VALUES: params[0] }))
+          } else handler.reply("TEXT", "/youtube play <video ID>")
+          break
+        case "stop":
+          this.notificationReceived("YT_STOP")
+          handler.reply("TEXT", this.translate("YouTubeStop"))
+          break
+        case "search":
+          if (!this.config.useSearch) return handler.reply("TEXT", this.translate("YouTubeSearchDisabled"))
+          if (params) {
+            this.notificationReceived("YT_SEARCH", params)
+            handler.reply("TEXT", this.translate("YouTubeSearch", { VALUES: params }))
+          }
+          else handler.reply("TEXT", "/youtube search <youtube title/artist>")
+          break
+        default:
+          handler.reply("TEXT", this.translate("YouTubeCmdNotFound"))
+          break
+      }
+    } else {
+      handler.reply("TEXT", this.translate("YouTubeHelp") + (this.config.useSearch ? this.translate("YouTubeSearchHelp") : ""), {parse_mode:'Markdown'})
+    }
+  },
 })
