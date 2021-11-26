@@ -40,7 +40,7 @@ module.exports = NodeHelper.create({
       if (bugsounet) {
         console.error("[YT] Warning:", bugsounet, "library not loaded !")
         console.error("[YT] Try to solve it with `npm install` in MMM-YouTube directory")
-        this.sendSocketNotification("Informations", { message: "Warning: " + bugsounet + " library not loaded !", timer: 5000})
+        this.sendSocketNotification("Informations", { message: "Warning: " + bugsounet + " librar" + (bugsounet == 1 ? "y" : "ies") + " not loaded !", timer: 5000})
         this.sendSocketNotification("Informations", { message: "Try to solve it with `npm install` in MMM-YouTube directory", timer: 5000})
         this.sendSocketNotification("Informations", { message: "Warning: Search function is disabled!"})
         return
@@ -102,6 +102,7 @@ module.exports = NodeHelper.create({
               }
             } catch (e) {
               console.error("[GA]", libraryToLoad, "Loading error!" , e)
+              this.sendSocketNotification("Informations", { message: "Warning: Library loading error: " + libraryToLoad})
               errors++
             }
           }
@@ -123,6 +124,7 @@ module.exports = NodeHelper.create({
       this.sendSocketNotification("YT_RESULT", item.id.videoId)
     } catch (e) {
       console.log("[YT] YouTube Search error: ", e.toString())
+      this.sendSocketNotification("Informations", { message: "YouTube Search Error: " + e.toString(), timer: 5000 })
     }
   },
 })
