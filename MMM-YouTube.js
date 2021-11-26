@@ -1,11 +1,7 @@
 //
 // Module : MMM-YouTube
-// @bugsounet 19/11/2021
+// @bugsounet 26/11/2021
 //
-
-
-// testing sample
-// @todo, make callback and remote controling
 
 logYT = (...args) => { /* do nothing */ }
 
@@ -41,13 +37,19 @@ Module.register("MMM-YouTube", {
       running: false
     }
     this.searchInit= false
+    this.Infos= {
+      displayed: false,
+      buffer: []
+    }
   },
 
   notificationReceived: function(notification, payload) {
     switch (notification) {
       case "DOM_OBJECTS_CREATED":
-        logYT("[YT] Go YouTube!")
+        this.prepareInfoDisplayer()
+        logYT("Go YouTube!")
         this.YouTube = document.getElementById("YT")
+        this.Informations({message: "@bugsounet: If you love this module, don't forget to donate!", timer: 10000})
         break
       case "YT_START":
         this.YouTube.src= "http://youtube.bugsounet.fr/?id="+this.config.videoID+"&origin="+ this.name + "&seed="+Date.now()
@@ -60,7 +62,7 @@ Module.register("MMM-YouTube", {
         this.Ended()
         break
       case "YT_SEARCH":
-        if (!this.searchInit) return
+        if (!this.searchInit) return this.Informations({ message: "Search function is disabled!" })
         if (payload) this.sendSocketNotification("YT_SEARCH", payload)
         break
     }
@@ -73,6 +75,9 @@ Module.register("MMM-YouTube", {
         break
       case "YT_RESULT":
         this.notificationReceived("YT_PLAY", payload)
+        break
+      case "Informations":
+        this.Informations(payload)
         break
     }
   },
@@ -107,7 +112,8 @@ Module.register("MMM-YouTube", {
 
   getStyles: function(){
     return [
-      this.file('MMM-YouTube.css')
+      this.file('MMM-YouTube.css'),
+      "https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
     ]
   },
 
@@ -137,6 +143,7 @@ Module.register("MMM-YouTube", {
         break
         case "Title:":
           this.YT.title = tag.slice(2).join(" ")
+          if (this.config.fullscreen && this.config.displayHeader) this.Informations({message: this.translate("YouTubeIsPlaying") + this.YT.title})
           if (this.YT.title && !this.config.fullscreen && this.config.displayHeader) {
             let YTHeader = document.getElementById(this.identifier).getElementsByClassName("module-header")[0]
             YTHeader.innerText= this.YT.title
@@ -233,7 +240,7 @@ Module.register("MMM-YouTube", {
           handler.reply("TEXT", this.translate("YouTubeStop"))
           break
         case "search":
-          if (!this.config.useSearch) return handler.reply("TEXT", this.translate("YouTubeSearchDisabled"))
+          if (!this.config.useSearch || !this.searchInit) return handler.reply("TEXT", this.translate("YouTubeSearchDisabled"))
           if (params) {
             this.notificationReceived("YT_SEARCH", params)
             handler.reply("TEXT", this.translate("YouTubeSearch", { VALUES: params }))
@@ -248,4 +255,91 @@ Module.register("MMM-YouTube", {
       handler.reply("TEXT", this.translate("YouTubeHelp") + (this.config.useSearch ? this.translate("YouTubeSearchHelp") : ""), {parse_mode:'Markdown'})
     }
   },
+
+  /***************************/
+  /** Information Displayer **/
+  /***************************/
+
+  prepareInfoDisplayer: function() {
+    var YT_Infos = document.createElement("div")
+    YT_Infos.id = "YT_Infos"
+    YT_Infos.style.zoom = "80%"
+    YT_Infos.className= "hidden animate__animated"
+    YT_Infos.style.setProperty('--animate-duration', '1s')
+
+    var YT_InfosBar = document.createElement("div")
+    YT_InfosBar.id = "YT_Infos-bar"
+    YT_InfosBar.tabindex = -1
+    YT_Infos.appendChild(YT_InfosBar)
+
+    //informations image
+    var YT_InfosIcon = document.createElement("img")
+    YT_InfosIcon.id= "YT_Infos-Icon"
+    YT_InfosIcon.className="YT_Infos-icon"
+    YT_InfosIcon.src = "/modules/MMM-YouTube/resources/YT.png"
+    YT_InfosBar.appendChild(YT_InfosIcon)
+
+    //transcription informations text
+    var YT_InfosResponse = document.createElement("span")
+    YT_InfosResponse.id= "YT_Infos-Transcription"
+    YT_InfosResponse.className="YT_Infos-response"
+    YT_InfosResponse.textContent= "~MMM-YouTube displayer~"
+    YT_InfosBar.appendChild(YT_InfosResponse)
+
+    document.body.appendChild(YT_Infos)
+  },
+
+  /** Information buffer to array **/
+  Informations(info) {
+    if (!info.message) { // should not happen
+      logYT("debug information:", info)
+      return this.Informations({ message: "Core Information: no message!" })
+    }
+
+    let infoObject = {
+      info: info
+    }
+    this.Infos.buffer.push(infoObject)
+    logYT("Informations Buffer Add:", this.Infos)
+    this.InformationsBuffer(this.Infos.buffer[0].info)
+  },
+
+  /** Informations Display with translate from buffer **/
+  InformationsBuffer: function(info) {
+    if (this.Infos.displayed || !this.Infos.buffer.length) return
+    this.showInformations(info)
+    this.InformationShow()
+
+    this.warningTimeout = setTimeout(() => {
+      this.InformationHidden()
+    }, info.timer ? info.timer : 3000)
+  },
+
+  showInformations: function (info) {
+    var tr = document.getElementById("YT_Infos-Transcription")
+    tr.textContent = this.translate(info.message, { VALUES: info.values })
+  },
+
+  InformationHidden: function () {
+    var infosDiv = document.getElementById("YT_Infos")
+    infosDiv.classList.remove('animate__bounceInDown')
+    infosDiv.classList.add("animate__bounceOutUp")
+    infosDiv.addEventListener('animationend', (e) => {
+      if (e.animationName == "bounceOutUp" && e.path[0].id == "YT_Infos") {
+        infosDiv.classList.add("hidden")
+        this.showInformations("")
+        this.Infos.buffer.shift()
+        this.Infos.displayed=false
+        logYT("Informations Buffer deleted", this.Infos)
+        if(this.Infos.buffer.length) this.InformationsBuffer(this.Infos.buffer[0].info)
+      }
+    }, {once: true})
+  },
+
+  InformationShow: function () {
+    var infosDiv = document.getElementById("YT_Infos")
+    this.Infos.displayed=true
+    infosDiv.classList.remove("hidden", "animate__bounceOutUp")
+    infosDiv.classList.add('animate__bounceInDown')
+  }
 })

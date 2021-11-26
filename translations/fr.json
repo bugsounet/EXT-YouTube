@@ -7,5 +7,6 @@
   "YouTubeCmdNotFound": "Commande non trouvée, besoin d'aide ? Essayez /youtube",
   "YouTubeHelp": "Besoin d'aide pour la commande /youtube ?\n\n  *start*: Démarre la lecture de la videoID par défaut définie en configuration\n  *play*: Démarre la lecture de la vidéo YouTube selon l'ID demandé\n  *stop*: Arrête la lecture de la vidéo YouTube\n",
   "YouTubeSearchHelp": "  *search*: Recherche et démarre la lecture de la video Youtube selon votre recherche (titre/artiste)\n",
-  "YouTubeSearchDisabled": "La fonctionnalitée YouTube search est désactivée."
+  "YouTubeSearchDisabled": "La fonctionnalitée YouTube search est désactivée.",
+  "YouTubeIsPlaying": "Lecture: "
 }

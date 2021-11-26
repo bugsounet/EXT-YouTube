@@ -1,4 +1,4 @@
-/** MMM-Porcupine helper **/
+/** MMM-YouTube helper **/
 
 "use strict"
 var NodeHelper = require("node_helper")
@@ -31,13 +31,18 @@ module.exports = NodeHelper.create({
     log("Config:", this.config)
     if (this.config.useSearch) {
       if (!fs.existsSync(__dirname + "/credentials.json")) {
-        console.error("[YT][FATAL] credentials.json file not found !")
+        console.error("[YT] credentials.json file not found !")
+        this.sendSocketNotification("Informations", { message: "Warning: credentials.json file not found !", timer: 8000})
+        this.sendSocketNotification("Informations", { message: "Warning: Search function is disabled!"})
         return
       }
       let bugsounet = await this.loadBugsounetLibrary()
       if (bugsounet) {
         console.error("[YT] Warning:", bugsounet, "library not loaded !")
         console.error("[YT] Try to solve it with `npm install` in MMM-YouTube directory")
+        this.sendSocketNotification("Informations", { message: "Warning: " + bugsounet + " library not loaded !", timer: 5000})
+        this.sendSocketNotification("Informations", { message: "Try to solve it with `npm install` in MMM-YouTube directory", timer: 5000})
+        this.sendSocketNotification("Informations", { message: "Warning: Search function is disabled!"})
         return
       }
       else {
@@ -60,6 +65,8 @@ module.exports = NodeHelper.create({
       } catch (e) {
         console.error("[FATAL] YouTube: YT.json file not found !")
         console.error("[YT] " + e)
+        this.sendSocketNotification("Informations", { message: "Warning: YT.json file not found !", timer: 8000})
+        this.sendSocketNotification("Informations", { message: "Warning: Search function is disabled!"})
         return
       }
     }
@@ -112,6 +119,7 @@ module.exports = NodeHelper.create({
       var item = results.data.items[0]
       var title = this.Lib.he.decode(item.snippet.title)
       console.log('[YT] Found YouTube Title: %s - videoId: %s', title, item.id.videoId)
+      if (this.config.debug) this.sendSocketNotification("Informations", { message: "[Debug] Found YouTube Title: " + title, timer: 2000 })
       this.sendSocketNotification("YT_RESULT", item.id.videoId)
     } catch (e) {
       console.log("[YT] YouTube Search error: ", e.toString())
