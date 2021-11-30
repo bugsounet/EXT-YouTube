@@ -14,7 +14,9 @@ Module.register("MMM-YouTube", {
     height: "17vw", //"600px"
     autoStart: true,
     useSearch: false,
-    displayHeader: true
+    displayHeader: true,
+    username: null,
+    token: null
   },
 
   start: function() {
@@ -52,11 +54,11 @@ Module.register("MMM-YouTube", {
         this.Informations({message: "@bugsounet: If you love this module, don't forget to donate!", timer: 10000})
         break
       case "YT_START":
-        this.YouTube.src= "http://youtube.bugsounet.fr/?id="+this.config.videoID+"&origin="+ this.name + "&seed="+Date.now()
+        this.YouTube.src= "http://youtube.bugsounet.fr/?id="+this.config.videoID+ "&username="+ this.config.username + "&token="+this.config.token+ "&seed=" + Date.now()
         break
       case "YT_PLAY":
         this.YT.title = null
-        this.YouTube.src= "http://youtube.bugsounet.fr/?id="+payload+"&origin="+ this.name + "&seed="+Date.now()
+        this.YouTube.src= "http://youtube.bugsounet.fr/?id="+payload+ "&username="+ this.config.username + "&token="+this.config.token + "&seed="+Date.now()
         break
       case "YT_STOP":
         this.Ended()
@@ -93,7 +95,7 @@ Module.register("MMM-YouTube", {
     }
     var YT = document.createElement('webview')
     YT.id = "YT"
-    if (this.config.autoStart) YT.src= "http://youtube.bugsounet.fr/?id="+this.config.videoID+"&origin="+ this.name + "&seed="+Date.now()
+    if (this.config.autoStart) YT.src= "http://youtube.bugsounet.fr/?id="+this.config.videoID + "&username="+ this.config.username + "&token="+this.config.token + "&seed="+Date.now()
     YT.addEventListener("did-stop-loading", () => {
       if (YT.getURL().includes("about:blank")) logYT("Video Ended")
       else logYT("Video Started")
