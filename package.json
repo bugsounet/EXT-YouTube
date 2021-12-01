@@ -1,11 +1,13 @@
 {
   "name": "MMM-YouTube",
-  "version": "0.9.0",
-  "rev": "211201-2",
+  "version": "1.0.0",
+  "rev": "211201-3",
   "description": "YouTube Player",
   "main": "MMM-YouTube.js",
   "scripts": {
-    "token": "node installer/auth_YouTube.js"
+    "token": "node installer/auth_YouTube.js",
+    "preinstall": "installer/preinstall.sh",
+    "postinstall": "installer/postinstall.sh"
   },
   "keywords": [
     "magic mirror",
