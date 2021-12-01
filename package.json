@@ -5,7 +5,7 @@
   "description": "YouTube Player",
   "main": "MMM-YouTube.js",
   "scripts": {
-    "preinstall": "git pull && git checkout -f master && git pull"
+    "preinstall": "installer/preinstall.sh"
   },
   "keywords": [
     "magic mirror",
