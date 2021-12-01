@@ -1,0 +1,12 @@
+{
+  "YouTubeDescription": "YouTube Player Control",
+  "YouTubeStart": "YouTube starts your default video.",
+  "YouTubePlay": "YouTube will playing video ID: {VALUES}",
+  "YouTubeStop": "YouTube video ended.",
+  "YouTubeSearch": "YouTube will search and playing video: {VALUES}",
+  "YouTubeCmdNotFound": "Command not found, need help ? try /youtube",
+  "YouTubeHelp": "Need Help for /youtube command ?\n\n  *start*: Launch the default YouTube videoID from config\n  *play*: Play an YouTube video ID\n  *stop*: Stop YouTube Video Player\n",
+  "YouTubeSearchHelp": "  *search*: Search and play a Title/Artist video\n",
+  "YouTubeSearchDisabled": "YouTube search functionality is disabled.",
+  "YouTubeIsPlaying": "Playing: "
+}

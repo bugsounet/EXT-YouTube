@@ -1,0 +1,12 @@
+{
+  "YouTubeDescription": "Contrôle du lecteur YouTube",
+  "YouTubeStart": "YouTube va démarrer votre vidéo par defaut.",
+  "YouTubePlay": "YouTube va démarrer la lecture de la video ID: {VALUES}",
+  "YouTubeStop": "La Video YouTube est terminée.",
+  "YouTubeSearch": "YouTube va rechercher et démarrer la lecture de la vidéo: {VALUES}",
+  "YouTubeCmdNotFound": "Commande non trouvée, besoin d'aide ? Essayez /youtube",
+  "YouTubeHelp": "Besoin d'aide pour la commande /youtube ?\n\n  *start*: Démarre la lecture de la videoID par défaut définie en configuration\n  *play*: Démarre la lecture de la vidéo YouTube selon l'ID demandé\n  *stop*: Arrête la lecture de la vidéo YouTube\n",
+  "YouTubeSearchHelp": "  *search*: Recherche et démarre la lecture de la video Youtube selon votre recherche (titre/artiste)\n",
+  "YouTubeSearchDisabled": "La fonctionnalitée YouTube search est désactivée.",
+  "YouTubeIsPlaying": "Lecture: "
+}
