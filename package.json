@@ -1,7 +1,7 @@
 {
   "name": "MMM-YouTube",
   "version": "0.9.0",
-  "rev": "211201-1",
+  "rev": "211201-2",
   "description": "YouTube Player",
   "main": "MMM-YouTube.js",
   "scripts": {
