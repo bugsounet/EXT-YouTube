@@ -1,6 +1,6 @@
 # MMM-YouTube
 
-Hi, I'm writing a new MMM-YouTube module (version 2022 ?)>br>
+Hi, I'm writing a new MMM-YouTube module (version 2022 ?)<br>
 I now able to play any YT video without VLC program<br>
 
 # Why refact a Youtube module ?
