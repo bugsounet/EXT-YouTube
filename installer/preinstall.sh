@@ -18,6 +18,7 @@ Installer_dir="$(Installer_get_current_dir)"
 
 # move to installler directory
 cd "$Installer_dir"
+source utils.sh
 
 # module name
 Installer_module="MMM-YouTube"
