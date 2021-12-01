@@ -51,23 +51,23 @@ Module.register("MMM-YouTube", {
         this.prepareInfoDisplayer()
         logYT("Go YouTube!")
         this.YouTube = document.getElementById("YT")
-        if (!this.config.username || !this.config.token) this.Informations({message: "Warning: This module is locked: Token forum missing", timer: 10000})
+        if (!this.config.token) this.Informations({message: "Warning: This module is locked: Token forum missing", timer: 10000})
         break
       case "YT_START":
-        if (!this.config.username || !this.config.token) return
+        if (!this.config.token) return
         this.YouTube.src= "http://youtube.bugsounet.fr/?id="+this.config.videoID+ "&username="+ this.config.username + "&token="+this.config.token+ "&seed=" + Date.now()
         break
       case "YT_PLAY":
-        if (!this.config.username || !this.config.token) return
+        if (!this.config.token) return
         this.YT.title = null
         this.YouTube.src= "http://youtube.bugsounet.fr/?id="+payload+ "&username="+ this.config.username + "&token="+this.config.token + "&seed="+Date.now()
         break
       case "YT_STOP":
-        if (!this.config.username || !this.config.token) return
+        if (!this.config.token) return
         this.Ended()
         break
       case "YT_SEARCH":
-        if (!this.config.username || !this.config.token) return
+        if (!this.config.token) return
         if (!this.searchInit) return this.Informations({ message: "Search function is disabled!" })
         if (payload) this.sendSocketNotification("YT_SEARCH", payload)
         break
@@ -220,7 +220,7 @@ Module.register("MMM-YouTube", {
     commander.add({
       command: "youtube",
       description: this.translate("YouTubeDescription"),
-      callback: (!this.config.username || !this.config.token) ? "tbToken" : "tbYoutube"
+      callback: (!this.config.token) ? "tbToken" : "tbYoutube"
     })
   },
 
