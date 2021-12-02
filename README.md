@@ -22,7 +22,7 @@ Right! I Code it !<br>
 
 ```sh
 cd ~/MagicMirror/modules/
-git clone -b dev https://github.com/bugsounet/MMM-YouTube
+git clone https://github.com/bugsounet/MMM-YouTube
 cd MMM-YouTube
 npm install
 ```
