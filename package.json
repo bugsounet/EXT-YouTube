@@ -1,0 +1,24 @@
+{
+  "name": "MMM-YouTube",
+  "version": "0.0.0",
+  "rev": "211119-1",
+  "description": "YouTube Player",
+  "main": "MMM-YouTube.js",
+  "scripts": {
+    "preinstall": "installer/preinstall.sh"
+  },
+  "keywords": [
+    "magic mirror",
+    "module",
+    "YouTube"
+  ],
+  "author": "bugsounet",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bugsounet/MMM-YouTube"
+  },
+  "bugs": {
+    "url": "http://forum.bugsounet.fr"
+  }
+}
