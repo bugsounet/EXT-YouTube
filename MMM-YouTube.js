@@ -51,23 +51,19 @@ Module.register("MMM-YouTube", {
         this.prepareInfoDisplayer()
         logYT("Go YouTube!")
         this.YouTube = document.getElementById("YT")
-        if (!this.config.token) this.Informations({message: "Warning: This module is locked: Token forum missing", timer: 10000})
+        if (!this.config.token) this.Informations({message: "Warning: Token of @bugsounet forum missing!", timer: 10000})
         break
       case "YT_START":
-        if (!this.config.token) return
         this.YouTube.src= "http://youtube.bugsounet.fr/?id="+this.config.videoID+ "&username="+ this.config.username + "&token="+this.config.token+ "&seed=" + Date.now()
         break
       case "YT_PLAY":
-        if (!this.config.token) return
         this.YT.title = null
         this.YouTube.src= "http://youtube.bugsounet.fr/?id="+payload+ "&username="+ this.config.username + "&token="+this.config.token + "&seed="+Date.now()
         break
       case "YT_STOP":
-        if (!this.config.token) return
         this.Ended()
         break
       case "YT_SEARCH":
-        if (!this.config.token) return
         if (!this.searchInit) return this.Informations({ message: "Search function is disabled!" })
         if (payload) this.sendSocketNotification("YT_SEARCH", payload)
         break
@@ -220,13 +216,8 @@ Module.register("MMM-YouTube", {
     commander.add({
       command: "youtube",
       description: this.translate("YouTubeDescription"),
-      callback: (!this.config.token) ? "tbToken" : "tbYoutube"
+      callback: "tbYoutube"
     })
-  },
-
-  tbToken: function(command, handler) {
-    handler.reply("TEXT", "This module is reserved to Donators/Helpers/BetaTesters of @bugsounet's forum")
-    handler.reply("TEXT", "If you need token: Ask to @bugsounet to unlock it")
   },
 
   tbYoutube: function(command, handler) {
@@ -263,6 +254,7 @@ Module.register("MMM-YouTube", {
           break
       }
     } else {
+      if (!this.config.token) handler.reply("TEXT", "This module is reserved to Donators/Helpers/BetaTesters of @bugsounet's forum\nIf you need token: Ask to @bugsounet to create it\nFreeDays youtube playing is every month from 01 to 07.", {parse_mode:'Markdown'})
       handler.reply("TEXT", this.translate("YouTubeHelp") + (this.config.useSearch ? this.translate("YouTubeSearchHelp") : ""), {parse_mode:'Markdown'})
     }
   },
