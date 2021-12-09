@@ -19,7 +19,7 @@ Right! I Code it !<br>
 ![](https://raw.githubusercontent.com/bugsounet/MMM-YouTube/dev/MMM-Youtube.png)
 
 # Require:
-This module is Reserved to **Donators/Helpers/BetaTester Groups**
+This module is Reserved to **Donators/Helpers/BetaTester Groups of @bugsounet's forum**
 
 But there is some FreeDays for testing this module<br>
 FreeDays days is defined every month from 01 to 07<br>
