@@ -18,6 +18,14 @@ Right! I Code it !<br>
 # Screenshoot: (the © Thriller video from M. Jackson)
 ![](https://raw.githubusercontent.com/bugsounet/MMM-YouTube/dev/MMM-Youtube.png)
 
+# Require:
+This module is Reserved to **Donators/Helpers/BetaTester Groups**
+
+But there is some FreeDays for testing this module<br>
+FreeDays days is defined every month from 01 to 07<br>
+In other case/day, you can't use this module
+
+
 # Installing:
 
 ```sh
