@@ -108,11 +108,6 @@ var config = {
  * The module display the title in the Header of the module
  * This module Should be ready for rpi3b+
  * This module will hide all modules on fullscreen playing (optimize video playback)
- * You can use TelegramBot for send notification
-   * `/notification YT_PLAY sOnqjkJTMaA` will play M. Jackson triller for example
-   * `/notification YT_START` will start the defined video in config
-   * `/notification YT_STOP` will stop the player
-   * `/notification YT_SEARCH Mickael Jackson Thriller` will search and play [desactived]
  * This module is linked to @bugsounet support forum
  * From @bugsounet forum: You need to have a username and your proper token associed
  * This module have a FreePlay days: every month from 01 to 07, for testing
