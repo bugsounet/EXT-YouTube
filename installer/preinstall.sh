@@ -42,10 +42,8 @@ echo
 
 # switch branch
 Installer_info "Installing Sources..."
-#git checkout -f master 2>/dev/null || Installer_error "Installing Error !"
-#git pull 2>/dev/null || Installer_error "Installing Error !"
-Installer_error "Installing Error !"
-exit 255
+git checkout -f master 2>/dev/null || Installer_error "Installing Error !"
+git pull 2>/dev/null || Installer_error "Installing Error !"
 
 echo
 Installer_info "Installing all npm libraries..."
