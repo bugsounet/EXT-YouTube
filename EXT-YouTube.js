@@ -1,13 +1,14 @@
 //
-// Module : MMM-YouTube
-// @bugsounet 26/11/2021
-//
+// Module : EXT-YouTube
+// @bugsounet 01/2022
+// @Todo VLC support
 
 logYT = (...args) => { /* do nothing */ }
 
-Module.register("MMM-YouTube", {
+Module.register("EXT-YouTube", {
   defaults: {
     debug: false,
+    useVLC: false,
     videoID: "sOnqjkJTMaA", //"Zi_XLOBDo_Y",
     fullscreen: false,
     width: "30vw", //"800px",
@@ -27,7 +28,7 @@ Module.register("MMM-YouTube", {
       this.data.position= "fullscreen_above"
     }
     else {
-      if (this.config.displayHeader) this.data.header = "~@bugsounet~ MMM-YouTube"
+      if (this.config.displayHeader) this.data.header = "~@bugsounet~ EXT-YouTube"
       if (!this.data.position) this.data.position= "top_center"
     }
     if (this.config.debug) logYT = (...args) => { console.log("[YT]", ...args) }
@@ -258,91 +259,9 @@ Module.register("MMM-YouTube", {
       handler.reply("TEXT", this.translate("YouTubeHelp") + (this.config.useSearch ? this.translate("YouTubeSearchHelp") : ""), {parse_mode:'Markdown'})
     }
   },
-
-  /***************************/
-  /** Information Displayer **/
-  /***************************/
-
-  prepareInfoDisplayer: function() {
-    var YT_Infos = document.createElement("div")
-    YT_Infos.id = "YT_Infos"
-    YT_Infos.style.zoom = "80%"
-    YT_Infos.className= "hidden animate__animated"
-    YT_Infos.style.setProperty('--animate-duration', '1s')
-
-    var YT_InfosBar = document.createElement("div")
-    YT_InfosBar.id = "YT_Infos-bar"
-    YT_InfosBar.tabindex = -1
-    YT_Infos.appendChild(YT_InfosBar)
-
-    //informations image
-    var YT_InfosIcon = document.createElement("img")
-    YT_InfosIcon.id= "YT_Infos-Icon"
-    YT_InfosIcon.className="YT_Infos-icon"
-    YT_InfosIcon.src = "/modules/MMM-YouTube/resources/YT.png"
-    YT_InfosBar.appendChild(YT_InfosIcon)
-
-    //transcription informations text
-    var YT_InfosResponse = document.createElement("span")
-    YT_InfosResponse.id= "YT_Infos-Transcription"
-    YT_InfosResponse.className="YT_Infos-response"
-    YT_InfosResponse.textContent= "~MMM-YouTube displayer~"
-    YT_InfosBar.appendChild(YT_InfosResponse)
-
-    document.body.appendChild(YT_Infos)
-  },
-
-  /** Information buffer to array **/
-  Informations(info) {
-    if (!info.message) { // should not happen
-      logYT("debug information:", info)
-      return this.Informations({ message: "Core Information: no message!" })
-    }
-
-    let infoObject = {
-      info: info
-    }
-    this.Infos.buffer.push(infoObject)
-    logYT("Informations Buffer Add:", this.Infos)
-    this.InformationsBuffer(this.Infos.buffer[0].info)
-  },
-
-  /** Informations Display with translate from buffer **/
-  InformationsBuffer: function(info) {
-    if (this.Infos.displayed || !this.Infos.buffer.length) return
-    this.showInformations(info)
-    this.InformationShow()
-
-    this.warningTimeout = setTimeout(() => {
-      this.InformationHidden()
-    }, info.timer ? info.timer : 3000)
-  },
-
-  showInformations: function (info) {
-    var tr = document.getElementById("YT_Infos-Transcription")
-    tr.textContent = this.translate(info.message, { VALUES: info.values })
-  },
-
-  InformationHidden: function () {
-    var infosDiv = document.getElementById("YT_Infos")
-    infosDiv.classList.remove('animate__bounceInDown')
-    infosDiv.classList.add("animate__bounceOutUp")
-    infosDiv.addEventListener('animationend', (e) => {
-      if (e.animationName == "bounceOutUp" && e.path[0].id == "YT_Infos") {
-        infosDiv.classList.add("hidden")
-        this.showInformations("")
-        this.Infos.buffer.shift()
-        this.Infos.displayed=false
-        logYT("Informations Buffer deleted", this.Infos)
-        if(this.Infos.buffer.length) this.InformationsBuffer(this.Infos.buffer[0].info)
-      }
-    }, {once: true})
-  },
-
-  InformationShow: function () {
-    var infosDiv = document.getElementById("YT_Infos")
-    this.Infos.displayed=true
-    infosDiv.classList.remove("hidden", "animate__bounceOutUp")
-    infosDiv.classList.add('animate__bounceInDown')
+  
+  Informations: function (info) {
+    logYT("INFO", info)
+    this.sendNotification("EXT_NOTIFICATION", info)
   }
 })

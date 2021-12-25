@@ -39,9 +39,9 @@ module.exports = NodeHelper.create({
       let bugsounet = await this.loadBugsounetLibrary()
       if (bugsounet) {
         console.error("[YT] Warning:", bugsounet, "library not loaded !")
-        console.error("[YT] Try to solve it with `npm install` in MMM-YouTube directory")
+        console.error("[YT] Try to solve it with `npm install` in EXT-YouTube directory")
         this.sendSocketNotification("Informations", { message: "Warning: " + bugsounet + " librar" + (bugsounet == 1 ? "y" : "ies") + " not loaded !", timer: 5000})
-        this.sendSocketNotification("Informations", { message: "Try to solve it with `npm install` in MMM-YouTube directory", timer: 5000})
+        this.sendSocketNotification("Informations", { message: "Try to solve it with `npm install` in EXT-YouTube directory", timer: 5000})
         this.sendSocketNotification("Informations", { message: "Warning: Search function is disabled!"})
         return
       }
@@ -70,7 +70,7 @@ module.exports = NodeHelper.create({
         return
       }
     }
-    console.log("[YT] MMM-YouTube is Ready.")
+    console.log("[YT] EXT-YouTube is Ready.")
   },
 
   /** Load require @busgounet library **/

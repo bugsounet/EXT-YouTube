@@ -1,9 +1,9 @@
 {
-  "name": "MMM-YouTube",
+  "name": "EXT-YouTube",
   "version": "1.0.0",
-  "rev": "211202-1",
+  "rev": "develop",
   "description": "YouTube Player",
-  "main": "MMM-YouTube.js",
+  "main": "EXT-YouTube.js",
   "scripts": {
     "token": "node installer/auth_YouTube.js",
     "preinstall": "installer/preinstall.sh",
@@ -18,7 +18,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bugsounet/MMM-YouTube"
+    "url": "https://github.com/bugsounet/EXT-YouTube"
   },
   "bugs": {
     "url": "http://forum.bugsounet.fr"
