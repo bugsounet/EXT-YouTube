@@ -1,5 +1,5 @@
-# MMM-YouTube
+# EXT-YouTube
 
 # Screenshoot: (Thriller from M. Jackson)
-![](https://raw.githubusercontent.com/bugsounet/MMM-YouTube/dev/MMM-Youtube.png)
+![](https://raw.githubusercontent.com/bugsounet/EXT-YouTube/dev/EXT-Youtube.png)
 
