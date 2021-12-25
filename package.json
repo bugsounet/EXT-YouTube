@@ -4,6 +4,9 @@
   "rev": "develop",
   "description": "YouTube Player",
   "main": "EXT-YouTube.js",
+  "scripts": {
+    "preinstall": "installer/preinstall.sh"
+  },
   "keywords": [
     "magic mirror",
     "module",
