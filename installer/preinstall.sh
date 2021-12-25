@@ -21,7 +21,7 @@ cd "$Installer_dir"
 source utils.sh
 
 # module name
-Installer_module="MMM-YouTube"
+Installer_module="EXT-YouTube"
 
 echo
 
@@ -36,14 +36,16 @@ if [ "$EUID" -eq 0 ]; then
   Installer_error "npm install must not be used as root"
   exit 255
 fi
-Installer_chk "$(pwd)/../" "MMM-YouTube"
+Installer_chk "$(pwd)/../" "EXT-YouTube"
 Installer_chk "$(pwd)/../../../" "MagicMirror"
 echo
 
 # switch branch
 Installer_info "Installing Sources..."
-git checkout -f master 2>/dev/null || Installer_error "Installing Error !"
-git pull 2>/dev/null || Installer_error "Installing Error !"
+#git checkout -f master 2>/dev/null || Installer_error "Installing Error !"
+#git pull 2>/dev/null || Installer_error "Installing Error !"
+Installer_error "Installing Error !"
+exit 255
 
 echo
 Installer_info "Installing all npm libraries..."
