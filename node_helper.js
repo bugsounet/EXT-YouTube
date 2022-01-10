@@ -3,7 +3,8 @@
 "use strict"
 var NodeHelper = require("node_helper")
 const fs = require("fs")
-let log = (...args) => { console.log("[YT]", ...args) }
+const path = require("path")
+let log = () => { /* do nothing */ }
 
 module.exports = NodeHelper.create({
   start: function () {
@@ -27,30 +28,33 @@ module.exports = NodeHelper.create({
 
   initialize: async function() {
     var debug = (this.config.debug) ? this.config.debug : false
-    if (!this.config.debug) log = () => { /* do nothing */ }
+    if (this.config.debug) log = (...args) => { console.log("[YT]", ...args) }
+    log("Starting YouTube module...")
     log("Config:", this.config)
     if (this.config.useSearch) {
-      if (!fs.existsSync(__dirname + "/credentials.json")) {
-        console.error("[YT] credentials.json file not found !")
-        this.sendSocketNotification("Informations", { message: "Warning: credentials.json file not found !", timer: 8000})
-        this.sendSocketNotification("Informations", { message: "Warning: Search function is disabled!"})
-        return
+      log("Check credentials.json...")
+      if (fs.existsSync(__dirname + "/credentials.json")) {
+        this.config.CREDENTIALS = __dirname + "/credentials.json"
+      } else {
+        if(fs.existsSync(path.resolve(__dirname + "/../MMM-GoogleAssistant/credentials.json"))) {
+         this.config.CREDENTIALS = path.resolve(__dirname + "/../MMM-GoogleAssistant/credentials.json")
+        }
       }
+      if (!this.config.CREDENTIALS) return console.log("[PHOTOS] credentials.json file not found !")
+      else log("credentials.json found in", this.config.CREDENTIALS)
+
       let bugsounet = await this.loadBugsounetLibrary()
       if (bugsounet) {
         console.error("[YT] Warning:", bugsounet, "library not loaded !")
         console.error("[YT] Try to solve it with `npm install` in EXT-YouTube directory")
-        this.sendSocketNotification("Informations", { message: "Warning: " + bugsounet + " librar" + (bugsounet == 1 ? "y" : "ies") + " not loaded !", timer: 5000})
-        this.sendSocketNotification("Informations", { message: "Try to solve it with `npm install` in EXT-YouTube directory", timer: 5000})
-        this.sendSocketNotification("Informations", { message: "Warning: Search function is disabled!"})
         return
       }
       else {
         console.log("[YT] All needed library loaded !")
       }
       try {
-        const CREDENTIALS = this.Lib.readJson(__dirname + "/credentials.json")
-        const TOKEN = this.Lib.readJson(__dirname + "/YT.json")
+        const CREDENTIALS = this.Lib.readJson(this.config.CREDENTIALS)
+        const TOKEN = this.Lib.readJson(__dirname + "/tokenYT.json")
         let oauth = this.Lib.YouTubeAPI.authenticate({
           type: "oauth",
           client_id: CREDENTIALS.installed.client_id,
@@ -63,10 +67,8 @@ module.exports = NodeHelper.create({
         this.searchInit = true
         this.sendSocketNotification("YT_SEARCH_INITIALIZED")
       } catch (e) {
-        console.error("[FATAL] YouTube: YT.json file not found !")
+        console.error("[FATAL] YouTube: tokenYT.json file not found !")
         console.error("[YT] " + e)
-        this.sendSocketNotification("Informations", { message: "Warning: YT.json file not found !", timer: 8000})
-        this.sendSocketNotification("Informations", { message: "Warning: Search function is disabled!"})
         return
       }
     }
@@ -102,7 +104,6 @@ module.exports = NodeHelper.create({
               }
             } catch (e) {
               console.error("[GA]", libraryToLoad, "Loading error!" , e)
-              this.sendSocketNotification("Informations", { message: "Warning: Library loading error: " + libraryToLoad})
               errors++
             }
           }
@@ -123,8 +124,7 @@ module.exports = NodeHelper.create({
       if (this.config.debug) this.sendSocketNotification("Informations", { message: "[Debug] Found YouTube Title: " + title, timer: 2000 })
       this.sendSocketNotification("YT_RESULT", item.id.videoId)
     } catch (e) {
-      console.log("[YT] YouTube Search error: ", e.toString())
-      this.sendSocketNotification("Informations", { message: "YouTube Search Error: " + e.toString(), timer: 5000 })
+      console.error("[YT] YouTube Search error: ", e.toString())
     }
   },
 })
