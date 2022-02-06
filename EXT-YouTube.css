@@ -22,3 +22,22 @@
   height: 100%;
   border: none;
 }
+
+#EXT-YT.hidden {
+  display: none;
+}
+
+#EXT-YT.fullscreen {
+  position: fixed;
+}
+
+#EXT-YT_LOGO {
+  background-color: #FFFF;
+  border-radius: 20px;
+  height: 100%;
+  width: 100%;
+}
+
+#EXT-YT_LOGO.hidden {
+  display: none;
+}

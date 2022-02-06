@@ -40,7 +40,10 @@ module.exports = NodeHelper.create({
          this.config.CREDENTIALS = path.resolve(__dirname + "/../MMM-GoogleAssistant/credentials.json")
         }
       }
-      if (!this.config.CREDENTIALS) return console.log("[PHOTOS] credentials.json file not found !")
+      if (!this.config.CREDENTIALS) {
+        this.sendSocketNotification("YT_CREDENTIALS_MISSING")
+        return console.log("[YT] credentials.json file not found !")
+      }
       else log("credentials.json found in", this.config.CREDENTIALS)
 
       let bugsounet = await this.loadBugsounetLibrary()
@@ -67,6 +70,7 @@ module.exports = NodeHelper.create({
         this.searchInit = true
         this.sendSocketNotification("YT_SEARCH_INITIALIZED")
       } catch (e) {
+        this.sendSocketNotification("YT_TOKEN_MISSING")
         console.error("[FATAL] YouTube: tokenYT.json file not found !")
         console.error("[YT] " + e)
         return
@@ -103,7 +107,8 @@ module.exports = NodeHelper.create({
                 log("Loaded " + libraryToLoad)
               }
             } catch (e) {
-              console.error("[GA]", libraryToLoad, "Loading error!" , e)
+              this.sendSocketNotification("YT_LIBRARY_ERROR", libraryToLoad)
+              console.error("[YT]", libraryToLoad, "Loading error!" , e)
               errors++
             }
           }
@@ -121,10 +126,11 @@ module.exports = NodeHelper.create({
       var item = results.data.items[0]
       var title = this.Lib.he.decode(item.snippet.title)
       console.log('[YT] Found YouTube Title: %s - videoId: %s', title, item.id.videoId)
-      if (this.config.debug) this.sendSocketNotification("Informations", { message: "[Debug] Found YouTube Title: " + title, timer: 2000 })
+      this.sendSocketNotification("YT_FOUND", title)
       this.sendSocketNotification("YT_RESULT", item.id.videoId)
     } catch (e) {
       console.error("[YT] YouTube Search error: ", e.toString())
+      this.sendSocketNotification("YT_SEARCH_ERROR")
     }
   },
 })

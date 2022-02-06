@@ -1,20 +1,16 @@
 //
 // Module : EXT-YouTube
 // @bugsounet 01/2022
-// @Todo VLC support
 
 logYT = (...args) => { /* do nothing */ }
 
 Module.register("EXT-YouTube", {
   defaults: {
-    debug: true,
-    videoID: "sOnqjkJTMaA", //"Zi_XLOBDo_Y",
-    fullscreen: false,
-    width: "30vw", //"800px",
-    height: "17vw", //"600px"
-    autoStart: true,
-    autoStartTimeout: 2000,
-    useSearch: false,
+    debug: false,
+    fullscreen: true,
+    width: "30vw",
+    height: "17vw",
+    useSearch: true,
     displayHeader: true,
     username: null,
     token: null
@@ -25,7 +21,6 @@ Module.register("EXT-YouTube", {
     if (this.data.position== "fullscreen_above" || this.data.position== "fullscreen_below") this.config.fullscreen = true
     if (this.config.fullscreen) {
       this.data.header = undefined
-      this.data.position= "fullscreen_above"
     } else {
       if (this.config.displayHeader) this.data.header = "~@bugsounet~ EXT-YouTube"
       if (!this.data.position) this.data.position= "top_center"
@@ -49,26 +44,35 @@ Module.register("EXT-YouTube", {
     switch (notification) {
       case "DOM_OBJECTS_CREATED":
         logYT("Go YouTube!")
+        if (this.config.fullscreen) this.preparePopup()
         this.YouTube = document.getElementById("EXT-YT")
-        if (!this.config.token) console.error("Warning: Token of @bugsounet forum missing!")
         this.sendNotification("EXT_HELLO", this.name)
-        if (this.config.autoStart) setTimeout(() => {
-          this.YouTube.src= "http://youtube.bugsounet.fr/?id="+this.config.videoID + "&username="+ this.config.username + "&token="+this.config.token + "&seed="+Date.now()
-        }, this.config.autoStartTimeout)
-        console.log("http://youtube.bugsounet.fr/?id="+this.config.videoID + "&username="+ this.config.username + "&token="+this.config.token + "&seed="+Date.now())
-        break
-      case "EXT_YOUTUBE-START":
-        this.YouTube.src= "http://youtube.bugsounet.fr/?id="+this.config.videoID+ "&username="+ this.config.username + "&token="+this.config.token+ "&seed=" + Date.now()
+        if (!this.config.token) {
+          console.error("Warning: Token of @bugsounet forum missing!")
+          this.sendNotification("EXT_ALERT", {
+            type: "warning",
+            message: this.translate("YouTubeTokenMissing"),
+            icon: "modules/EXT-YouTube/resources/YT.png"
+          })
+        }
         break
       case "EXT_YOUTUBE-PLAY":
         this.YT.title = null
         this.YouTube.src= "http://youtube.bugsounet.fr/?id="+payload+ "&username="+ this.config.username + "&token="+this.config.token + "&seed="+Date.now()
         break
+      case "EXT_STOP":
       case "EXT_YOUTUBE-STOP":
-        this.Ended()
+        if (this.YT.running) this.Ended()
         break
       case "EXT_YOUTUBE-SEARCH":
-        if (!this.searchInit) return console.error("Search function is disabled!")
+        if (!this.searchInit) {
+          this.sendNotification("EXT_ALERT", {
+            type: "error",
+            message: this.translate("YouTubeSearchDisabled"),
+            icon: "modules/EXT-YouTube/resources/YT.png"
+          })
+          return console.error("Search function is disabled!")
+        }
         if (payload) this.sendSocketNotification("YT_SEARCH", payload)
         break
     }
@@ -80,7 +84,50 @@ Module.register("EXT-YouTube", {
         this.searchInit= true
         break
       case "YT_RESULT":
-        this.notificationReceived("YT_PLAY", payload)
+        this.notificationReceived("EXT_YOUTUBE-PLAY", payload)
+        break
+      case "YT_FOUND":
+        if (this.config.fullscreen && this.config.displayHeader) {
+          this.sendNotification("EXT_ALERT", {
+            type: "information",
+            message: this.translate("YouTubeIsPlaying", { VALUES: payload }),
+            icon: "modules/EXT-YouTube/resources/YT.png",
+            timer: 6000,
+            sound: "modules/EXT-YouTube/resources/YT-Launch.mp3"
+          })
+        }
+        break
+      case "YT_TOKEN_MISSING":
+        this.sendNotification("EXT_ALERT", {
+          type: "error",
+          message: this.translate("YouTubeTokenError"),
+          icon: "modules/EXT-YouTube/resources/YT.png",
+          timer: 10000,
+        })
+        break
+      case "YT_LIBRARY_ERROR":
+        this.sendNotification("EXT_ALERT", {
+          type: "error",
+          message: this.translate("YouTubeLibraryError", { VALUES: payload }),
+          icon: "modules/EXT-YouTube/resources/YT.png",
+          timer: 10000,
+        })
+        break
+      case "YT_SEARCH_ERROR":
+        this.sendNotification("EXT_ALERT", {
+          type: "error",
+          message: this.translate("YouTubeFoundError"),
+          icon: "modules/EXT-YouTube/resources/YT.png",
+          timer: 5000,
+        })
+        break
+      case "YT_CREDENTIALS_MISSING":
+        this.sendNotification("EXT_ALERT", {
+          type: "error",
+          message: this.translate("YouTubeCredentialsError"),
+          icon: "modules/EXT-YouTube/resources/YT.png",
+          timer: 10000,
+        })
         break
     }
   },
@@ -88,28 +135,37 @@ Module.register("EXT-YouTube", {
   getDom: function() {
     var wrapper = document.createElement('div')
     wrapper.id = "EXT-YT_WINDOW"
-    this.hide(0, {lockString: "EXT-YT_LOCKED"})
-    wrapper.className = "hidden"
-    if (!this.config.fullscreen) {
-      wrapper.style.width = this.config.width
-      wrapper.style.height = this.config.height
+    if (this.config.fullscreen) {
+      wrapper.className = "hidden"
+      return wrapper
     }
-    var YT = document.createElement('webview')
-    YT.id = "EXT-YT"
 
-    YT.addEventListener("did-stop-loading", () => {
-      if (YT.getURL().includes("about:blank")) logYT("Video Ended")
+    wrapper.style.width = this.config.width
+    wrapper.style.height = this.config.height
+    var YTLogo= document.createElement('img')
+    YTLogo.id = "EXT-YT_LOGO"
+    YTLogo.src = "modules/EXT-YouTube/resources/YouTube-Logo.png"
+    wrapper.appendChild(YTLogo)
+
+    var YTPlayer = document.createElement('webview')
+    YTPlayer.id = "EXT-YT"
+    YTPlayer.className = "hidden"
+
+    YTPlayer.addEventListener("did-stop-loading", () => {
+      if (YTPlayer.getURL().includes("about:blank")) logYT("Video Ended")
       else logYT("Video Started")
     })
-    YT.addEventListener("console-message", (event) => {
-      if (YT.getURL().includes("about:blank")) return
+    YTPlayer.addEventListener("console-message", (event) => {
+      if (YTPlayer.getURL().includes("about:blank")) return
       this.Rules(event.message)
     })
-    YT.addEventListener("did-fail-load", (message) => {
+    YTPlayer.addEventListener("did-fail-load", (message) => {
       console.error("[YT][Error]", message.errorDescription)
+      this.sendNotification("EXT_ALERT", { type: "error", message: "Youtube Error: " + message.errorDescription }) 
       this.Ended()
     })
-    wrapper.appendChild(YT)
+
+    wrapper.appendChild(YTPlayer)
     return wrapper
   },
 
@@ -151,23 +207,25 @@ Module.register("EXT-YouTube", {
             let YTHeader = document.getElementById(this.identifier).getElementsByClassName("module-header")[0]
             YTHeader.innerText= this.YT.title
           }
-        break
+          break
       }
     }
   },
 
   Ended: function() {
-    var YTWindow = document.getElementById("EXT-YT_WINDOW")
     var YTPlayer = document.getElementById("EXT-YT")
+    var YTLogo = document.getElementById("EXT-YT_LOGO")
     if (!this.config.fullscreen && this.config.displayHeader) {
       let YTHeader = document.getElementById(this.identifier).getElementsByClassName("module-header")[0]
       YTHeader.innerHTML= this.data.header
     }
-    this.hide(1000, {lockString: "EXT-YT_LOCKED"})
-    YTWindow.className = "hidden"
+
+    YTPlayer.classList.add("hidden")
     YTPlayer.src= "about:blank?&seed="+Date.now()
+    if (!this.config.fullscreen) YTLogo.classList.remove("hidden")
+
     this.broadcastStatus("END")
-    // reset YT rules
+
     this.YT = {
       status: false,
       ended: false,
@@ -179,9 +237,11 @@ Module.register("EXT-YouTube", {
 
   Started: function() {
     if (this.config.fullscreen) this.Hiding()
-    var YTWindow = document.getElementById("EXT-YT_WINDOW")
-    this.show(1000, {lockString: "EXT-YT_LOCKED"})
-    YTWindow.classList.remove("hidden")
+    var YTPlayer = document.getElementById("EXT-YT")
+    var YTLogo = document.getElementById("EXT-YT_LOGO")
+
+    if (!this.config.fullscreen) YTLogo.className= "hidden"
+    YTPlayer.classList.remove("hidden")
     this.broadcastStatus("START")
     this.YT.running = true
   },
@@ -205,6 +265,28 @@ Module.register("EXT-YouTube", {
     else if (status == "END") this.sendNotification("EXT_YOUTUBE-DISCONNECTED")
   },
 
+
+  preparePopup: function() {
+    var YTPlayer = document.createElement('webview')
+    YTPlayer.id = "EXT-YT"
+    YTPlayer.classList.add("fullscreen", "hidden")
+
+    YTPlayer.addEventListener("did-stop-loading", () => {
+      if (YTPlayer.getURL().includes("about:blank")) logYT("Video Ended")
+      else logYT("Video Started")
+    })
+    YTPlayer.addEventListener("console-message", (event) => {
+      if (YTPlayer.getURL().includes("about:blank")) return
+      this.Rules(event.message)
+    })
+    YTPlayer.addEventListener("did-fail-load", (message) => {
+      console.error("[YT][Error]", message.errorDescription)
+      this.sendNotification("EXT_ALERT", { type: "error", message: "Youtube Error: " + message.errorDescription }) 
+      this.Ended()
+    })
+    document.body.appendChild(YTPlayer)
+  },
+
   /****************************/
   /*** TelegramBot Commands ***/
   /****************************/
@@ -222,10 +304,6 @@ Module.register("EXT-YouTube", {
       var args = query.toLowerCase().split(" ")
       var params = query.split(" ").slice(1).join(" ")
       switch (args[0]) {
-        case "start":
-          this.notificationReceived("EXT_YOUTUBE-START")
-          handler.reply("TEXT", this.translate("YouTubeStart"))
-          break
         case "play":
           if (params) {
             params = params.split(" ")
