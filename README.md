@@ -12,7 +12,7 @@ It can be controled with `MMM-TelegramBot` or with your voice
 ![](https://raw.githubusercontent.com/bugsounet/EXT-YouTube/dev/EXT-Youtube.png)
 
 ## Warn
-This module is reserved to Donators of [@bugsounet forum]((https://forum.bugsounet.fr)
+This module is reserved to Donators of [@bugsounet forum](https://forum.bugsounet.fr)
 
 ## Installation / update / configuration
 
