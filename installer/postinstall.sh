@@ -18,17 +18,17 @@ Installer_dir="$(Installer_get_current_dir)"
 
 # move to installler directory
 cd "$Installer_dir"
-
 source utils.sh
 
-# module name
-Installer_module="MMM-YouTube"
+# Go back to module root
+cd ..
 
-echo
-Installer_info "This module is reserved to Donators / Helpers / BetaTester of @bugsounet forum coding"
-Installer_info "All FreeDays for testing this modules start from 01 to 07 of each months"
-echo
-Installer_warning "Support is now moved in a dedicated Server: http://forum.bugsounet.fr"
+# module name
+Installer_module="$(grep -Eo '\"name\"[^,]*' ./package.json | grep -Eo '[^:]*$' | awk  -F'\"' '{print $2}')"
+
+
+# the end...
+Installer_warning "Support is now moved in a dedicated Server: https://forum.bugsounet.fr"
 Installer_warning "@bugsounet"
 echo
 Installer_success "$Installer_module is now installed !"
