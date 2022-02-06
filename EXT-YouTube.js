@@ -11,6 +11,7 @@ Module.register("EXT-YouTube", {
     width: "30vw",
     height: "17vw",
     useSearch: true,
+    alwaysDisplayed: true,
     displayHeader: true,
     username: null,
     token: null
@@ -22,7 +23,7 @@ Module.register("EXT-YouTube", {
     if (this.config.fullscreen) {
       this.data.header = undefined
     } else {
-      if (this.config.displayHeader) this.data.header = "~@bugsounet~ EXT-YouTube"
+      if (this.config.displayHeader) this.data.header = "~YouTube Player~"
       if (!this.data.position) this.data.position= "top_center"
     }
     if (this.config.debug) logYT = (...args) => { console.log("[YT]", ...args) }
@@ -140,6 +141,7 @@ Module.register("EXT-YouTube", {
       return wrapper
     }
 
+    if (!this.config.alwaysDisplayed && !this.config.fullscreen) this.hide(0, {lockString: "EXT-YT_LOCKED"})
     wrapper.style.width = this.config.width
     wrapper.style.height = this.config.height
     var YTLogo= document.createElement('img')
@@ -223,7 +225,7 @@ Module.register("EXT-YouTube", {
     YTPlayer.classList.add("hidden")
     YTPlayer.src= "about:blank?&seed="+Date.now()
     if (!this.config.fullscreen) YTLogo.classList.remove("hidden")
-
+    if (!this.config.alwaysDisplayed && !this.config.fullscreen) this.hide(0, {lockString: "EXT-YT_LOCKED"})
     this.broadcastStatus("END")
 
     this.YT = {
@@ -240,6 +242,7 @@ Module.register("EXT-YouTube", {
     var YTPlayer = document.getElementById("EXT-YT")
     var YTLogo = document.getElementById("EXT-YT_LOGO")
 
+    if (!this.config.alwaysDisplayed && !this.config.fullscreen) this.show(0, {lockString: "EXT-YT_LOCKED"})
     if (!this.config.fullscreen) YTLogo.className= "hidden"
     YTPlayer.classList.remove("hidden")
     this.broadcastStatus("START")
