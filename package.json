@@ -1,7 +1,7 @@
 {
   "name": "EXT-YouTube",
   "version": "1.0.0",
-  "rev": "develop",
+  "rev": "220206",
   "description": "YouTube Player",
   "main": "EXT-YouTube.js",
   "scripts": {
@@ -21,7 +21,7 @@
     "url": "https://github.com/bugsounet/EXT-YouTube"
   },
   "bugs": {
-    "url": "http://forum.bugsounet.fr"
+    "url": "https://forum.bugsounet.fr"
   },
   "dependencies": {
     "he": "^1.2.0",
