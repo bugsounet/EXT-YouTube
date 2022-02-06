@@ -11,9 +11,23 @@ const path = require('path');
 const mkdirp = require('mkdirp');
 const {OAuth2Client} = require('google-auth-library');
 
+let CREDENTIALS= null;
+
+console.log("[YT] Check credentials.json...")
+if (fs.existsSync(path.resolve(__dirname + "/../credentials.json"))) {
+  CREDENTIALS = path.resolve(__dirname + "/../credentials.json")
+} else {
+  if(fs.existsSync(path.resolve(__dirname + "/../../MMM-GoogleAssistant/credentials.json"))) {
+    CREDENTIALS = path.resolve(__dirname + "/../../MMM-GoogleAssistant/credentials.json")
+  }
+}
+
+if (!CREDENTIALS) return console.log("[YT] credentials.json file not found !")
+else console.log("[YT] credentials.json found in", CREDENTIALS)
+
 const config = {
-    keyFilePath: path.resolve(__dirname, '../credentials.json'),
-    savedTokensPath: path.resolve(__dirname, '../YT.json'), // where you want the tokens to be saved
+    keyFilePath: CREDENTIALS,
+    savedTokensPath: path.resolve(__dirname, '../tokenYT.json'), // where you want the tokens to be saved
 };
 
 function Auth(config) {
@@ -21,11 +35,11 @@ function Auth(config) {
 
   // make sure we have a key file to read from
   if (config.keyFilePath === undefined) {
-    throw new Error('Missing "keyFilePath" from config (should be where your JSON file is)');
+    throw new Error('[YT] Missing "keyFilePath" from config (should be where your JSON file is)');
   }
 
   if (config.savedTokensPath === undefined) {
-    throw new Error('Missing "savedTokensPath" from config (this is where your OAuth2 access tokens will be saved)');
+    throw new Error('[YT] Missing "savedTokensPath" from config (this is where your OAuth2 access tokens will be saved)');
     return;
   }
 
@@ -40,7 +54,7 @@ function Auth(config) {
     // save them for later
     mkdirp(path.dirname(config.savedTokensPath), () => {
       fs.writeFile(config.savedTokensPath, JSON.stringify(tokens), () => {
-        console.log("YT.json saved !")
+        console.log("[YT] tokenYT.json saved !")
         process.exit(0)
       });
     });
@@ -53,9 +67,9 @@ function Auth(config) {
     });
 
     // open the URL
-    console.log('Opening OAuth URL. Return here with your code.');
+    console.log('[YT] Opening OAuth URL. Return here with your code.');
     open(url).catch(() => {
-      console.log('Failed to automatically open the URL. Copy/paste this in your browser:\n', url);
+      console.log('[YT] Failed to automatically open the URL. Copy/paste this in your browser:\n', url);
     });
 
     // if tokenInput is configured
@@ -72,7 +86,7 @@ function Auth(config) {
       terminal: false,
     });
 
-    reader.question('Paste your code: ', processTokens);
+    reader.question('[YT] Paste your code: ', processTokens);
   };
 
   const processTokens = (oauthCode) => {
@@ -81,7 +95,7 @@ function Auth(config) {
     // get our tokens to save
     oauthClient.getToken(oauthCode, (error, tkns) => {
       // if we didn't have an error, save the tokens
-      if (error) throw new Error('Error getting tokens:', error);
+      if (error) throw new Error('[YT] Error getting tokens:', error);
 
       tokens = tkns;
       saveTokens();
