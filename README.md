@@ -9,7 +9,8 @@ This module is an Extented for `MMM-GoogleAssistant` v4.x, you can naturally use
 It can be controled with `MMM-TelegramBot` or with your voice
 
 ## Screenshot
-![](https://raw.githubusercontent.com/bugsounet/EXT-YouTube/dev/EXT-Youtube.png)
+![](https://raw.githubusercontent.com/bugsounet/EXT-YouTube/dev/resources/Screenshot1.png)
+![](https://raw.githubusercontent.com/bugsounet/EXT-YouTube/dev/resources/Screenshot2.png)
 
 ## Warn
 This module is reserved to Donators of [@bugsounet forum](https://forum.bugsounet.fr)
