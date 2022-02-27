@@ -7,7 +7,7 @@ logYT = (...args) => { /* do nothing */ }
 Module.register("EXT-YouTube", {
   defaults: {
     debug: false,
-    fullscreen: true,
+    fullscreen: false,
     width: "30vw",
     height: "17vw",
     useSearch: true,

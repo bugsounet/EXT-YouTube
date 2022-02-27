@@ -1,13 +1,14 @@
 {
   "name": "EXT-YouTube",
   "version": "1.0.0",
-  "rev": "220206-2",
+  "rev": "220227",
   "description": "YouTube Player",
   "main": "EXT-YouTube.js",
   "scripts": {
     "token": "node installer/auth_YouTube.js",
     "preinstall": "installer/preinstall.sh",
-    "postinstall": "installer/postinstall.sh"
+    "postinstall": "installer/postinstall.sh",
+    "update": "installer/update.sh"
   },
   "keywords": [
     "magic mirror",
