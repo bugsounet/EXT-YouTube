@@ -41,13 +41,12 @@ Module.register("EXT-YouTube", {
     }
   },
 
-  notificationReceived: function(notification, payload) {
+  notificationReceived: function(notification, payload, sender) {
     switch (notification) {
       case "DOM_OBJECTS_CREATED":
         logYT("Go YouTube!")
         if (this.config.fullscreen) this.preparePopup()
         this.YouTube = document.getElementById("EXT-YT")
-        this.sendNotification("EXT_HELLO", this.name)
         if (!this.config.token) {
           console.error("Warning: Token of @bugsounet forum missing!")
           this.sendNotification("EXT_ALERT", {
@@ -56,6 +55,9 @@ Module.register("EXT-YouTube", {
             icon: "modules/EXT-YouTube/resources/YT.png"
           })
         }
+        break
+      case "GAv4_READY":
+        if (sender.name == "MMM-GoogleAssistant") this.sendNotification("EXT_HELLO", this.name)
         break
       case "EXT_YOUTUBE-PLAY":
         this.YT.title = null
