@@ -1,11 +1,11 @@
 {
   "name": "EXT-YouTube",
   "version": "1.0.0",
-  "rev": "220227",
+  "rev": "2200306",
   "description": "YouTube Player",
   "main": "EXT-YouTube.js",
   "scripts": {
-    "token": "node installer/auth_YouTube.js",
+    "token": "installer/token.sh",
     "preinstall": "installer/preinstall.sh",
     "postinstall": "installer/postinstall.sh",
     "update": "installer/update.sh"
