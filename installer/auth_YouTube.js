@@ -64,6 +64,7 @@ function Auth(config) {
     const url = oauthClient.generateAuthUrl({
       access_type: 'offline',
       scope: ['https://www.googleapis.com/auth/youtube'],
+      prompt: 'consent'
     });
 
     // open the URL
