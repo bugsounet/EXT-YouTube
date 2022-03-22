@@ -56,15 +56,16 @@ module.exports = NodeHelper.create({
         console.log("[YT] All needed library loaded !")
       }
       try {
-        const CREDENTIALS = this.Lib.readJson(this.config.CREDENTIALS)
+        var CREDENTIALS = this.Lib.readJson(this.config.CREDENTIALS)
+        CREDENTIALS = CREDENTIALS.installed || CREDENTIALS.web
         const TOKEN = this.Lib.readJson(__dirname + "/tokenYT.json")
         let oauth = this.Lib.YouTubeAPI.authenticate({
           type: "oauth",
-          client_id: CREDENTIALS.installed.client_id,
-          client_secret: CREDENTIALS.installed.client_secret,
-          redirect_url: CREDENTIALS.installed.redirect_uris,
+          client_id: CREDENTIALS.client_id,
+          client_secret: CREDENTIALS.client_secret,
+          redirect_url: CREDENTIALS.redirect_uris,
           access_token: TOKEN.access_token,
-          refresh_token: TOKEN.refresh_token,
+          refresh_token: TOKEN.refresh_token
         })
         console.log("[YT] YouTube Search Function initilized.")
         this.searchInit = true
