@@ -183,7 +183,8 @@ Module.register("EXT-YouTube", {
   getTranslations: function() {
     return {
       en: "translations/en.json",
-      fr: "translations/fr.json"
+      fr: "translations/fr.json",
+      el: "translations/el.json"
     }
   },
 
