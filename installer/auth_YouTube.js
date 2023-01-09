@@ -8,7 +8,6 @@ const open = require('open');
 const readline = require('readline');
 const fs = require('fs');
 const path = require('path');
-const mkdirp = require('mkdirp');
 const {OAuth2Client} = require('google-auth-library');
 
 let CREDENTIALS= null;
@@ -52,11 +51,9 @@ function Auth(config) {
     oauthClient.setCredentials(tokens);
 
     // save them for later
-    mkdirp(path.dirname(config.savedTokensPath), () => {
-      fs.writeFile(config.savedTokensPath, JSON.stringify(tokens), () => {
-        console.log("[YT] tokenYT.json saved !")
-        process.exit(0)
-      });
+    fs.writeFile(config.savedTokensPath, JSON.stringify(tokens), () => {
+      console.log("[YT] tokenYT.json saved !")
+      process.exit(0)
     });
   };
 
