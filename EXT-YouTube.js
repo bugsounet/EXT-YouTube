@@ -296,7 +296,7 @@ Module.register("EXT-YouTube", {
   /****************************/
   /*** TelegramBot Commands ***/
   /****************************/
-  getCommands: function(commander) {
+  EXT_TELBOTCommands: function(commander) {
     commander.add({
       command: "youtube",
       description: this.translate("YouTubeDescription"),
