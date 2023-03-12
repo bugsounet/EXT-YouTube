@@ -12,15 +12,14 @@ var recipe = {
 
   commands: {
     "YouTube_SEARCH": {
-      functionExec: {
-        exec: (params) => {
-          this.sendNotification("EXT_YOUTUBE-SEARCH", params[1])
-        }
+      notificationExec: {
+        notification: "EXT_YOUTUBE-SEARCH",
+        payload: (params) => { return params[1] }
       },
       soundExec: {
         chime: "open",
       },
-      displayResponse: true
+      displayResponse: false
     }
   }
 }
