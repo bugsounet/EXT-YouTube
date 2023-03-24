@@ -1,12 +1,10 @@
-# EXT-YouTube - Extented for `MMM-GoogleAssistant` v5.x
-
-EXT-YouTube is a module for the [MagicMirror](https://github.com/MichMich/MagicMirror) project by [Michael Teeuw](https://github.com/MichMich).
+# EXT-YouTube - Extented for `MMM-GoogleAssistant`
 
 It allow to display YouTube video on MagicMirror<br>
 You can display YouTube video on a window or in fullscreen
 
-This module is an Extented for `MMM-GoogleAssistant` v5.x, you can naturally use it as a simple module !<br>
-It can be controled with `MMM-TelegramBot` or with your voice
+This module is an Extented plugin for `MMM-GoogleAssistant`<br>
+It can be controled with `EXT-TelegramBot` or with your voice
 
 ## Screenshot
 ![](https://raw.githubusercontent.com/bugsounet/EXT-YouTube/dev/resources/Screenshot1.png)

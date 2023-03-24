@@ -1,6 +1,6 @@
 //
 // Module : EXT-YouTube
-// @bugsounet 01/2022
+// @bugsounet 03/2023
 
 logYT = (...args) => { /* do nothing */ }
 
@@ -14,7 +14,7 @@ Module.register("EXT-YouTube", {
     alwaysDisplayed: true,
     displayHeader: true,
     username: null,
-    token: null
+    password: null
   },
 
   start: function() {
@@ -27,7 +27,7 @@ Module.register("EXT-YouTube", {
       if (!this.data.position) this.data.position= "top_center"
     }
     if (this.config.debug) logYT = (...args) => { console.log("[YT]", ...args) }
-    this.sendSocketNotification('INIT', this.config)
+    if (this.config.token) this.config.password = this.config.token
     this.YT = {
       status: false,
       ended: false,
@@ -39,29 +39,31 @@ Module.register("EXT-YouTube", {
       displayed: false,
       buffer: []
     }
+    this.ready = false
   },
 
   notificationReceived: function(notification, payload, sender) {
+    if (notification == "GW_READY" && sender.name == "Gateway") {
+      this.sendSocketNotification('INIT', this.config)
+      logYT("Go YouTube!")
+      if (this.config.fullscreen) this.preparePopup()
+      this.sendNotification("EXT_HELLO", this.name)
+      this.YouTube = document.getElementById("EXT-YT")
+      if (!this.config.password) {
+        console.error("Warning: Token of @bugsounet forum missing!")
+        this.sendNotification("EXT_ALERT", {
+          type: "warning",
+          message: this.translate("YouTubeTokenMissing"),
+          icon: "modules/EXT-YouTube/resources/YT.png"
+        })
+      }
+      this.ready = true
+    }
+    if (!this.ready) return
     switch (notification) {
-      case "DOM_OBJECTS_CREATED":
-        logYT("Go YouTube!")
-        if (this.config.fullscreen) this.preparePopup()
-        this.YouTube = document.getElementById("EXT-YT")
-        if (!this.config.token) {
-          console.error("Warning: Token of @bugsounet forum missing!")
-          this.sendNotification("EXT_ALERT", {
-            type: "warning",
-            message: this.translate("YouTubeTokenMissing"),
-            icon: "modules/EXT-YouTube/resources/YT.png"
-          })
-        }
-        break
-      case "GAv5_READY":
-        if (sender.name == "MMM-GoogleAssistant") this.sendNotification("EXT_HELLO", this.name)
-        break
       case "EXT_YOUTUBE-PLAY":
         this.YT.title = null
-        this.YouTube.src= "http://youtube.bugsounet.fr/?id="+payload+ "&username="+ this.config.username + "&token="+this.config.token + "&seed="+Date.now()
+        this.YouTube.src= "https://youtube.bugsounet.fr/?id="+payload+ "&username="+ this.config.username + "&password="+this.config.password + "&seed="+Date.now()
         break
       case "EXT_STOP":
       case "EXT_YOUTUBE-STOP":
