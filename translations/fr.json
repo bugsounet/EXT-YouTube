@@ -8,7 +8,7 @@
   "YouTubeSearchHelp": "  *search*: Recherche et démarre la lecture de la video Youtube selon votre recherche (titre/artiste)\n",
   "YouTubeSearchDisabled": "La fonctionnalitée de recherche sur YouTube est désactivée.",
   "YouTubeIsPlaying": "Lecture: {VALUES}",
-  "YouTubeTokenMissing": "Token du forum @bugsounet manquant!",
+  "YouTubeTokenMissing": "Password manquant!",
   "YouTubeTokenError": "[FATAL] Token YouTube: tokenYT.json manquant!",
   "YouTubeLibraryError": "[FATAL] Erreur de chargement de la librairie: {VALUES}",
   "YouTubeCredentialsError": "[FATAL] credentials.json manquant!",

@@ -45,18 +45,16 @@ Module.register("EXT-YouTube", {
   notificationReceived: function(notification, payload, sender) {
     if (notification == "GW_READY" && sender.name == "Gateway") {
       this.sendSocketNotification('INIT', this.config)
-      logYT("Go YouTube!")
       if (this.config.fullscreen) this.preparePopup()
-      this.sendNotification("EXT_HELLO", this.name)
       this.YouTube = document.getElementById("EXT-YT")
       if (!this.config.password) {
-        console.error("Warning: Token of @bugsounet forum missing!")
         this.sendNotification("EXT_ALERT", {
           type: "warning",
           message: this.translate("YouTubeTokenMissing"),
           icon: "modules/EXT-YouTube/resources/YT.png"
         })
       }
+      this.sendNotification("EXT_HELLO", this.name)
       this.ready = true
     }
     if (!this.ready) return
