@@ -174,10 +174,7 @@ Module.register("EXT-YouTube", {
   },
 
   getStyles: function(){
-    return [
-      this.file('EXT-YouTube.css'),
-      "https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
-    ]
+    return [ this.file('EXT-YouTube.css') ]
   },
 
   getTranslations: function() {
