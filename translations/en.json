@@ -8,7 +8,7 @@
   "YouTubeSearchHelp": "  *search*: Search and play a Title/Artist video\n",
   "YouTubeSearchDisabled": "YouTube search functionality is disabled.",
   "YouTubeIsPlaying": "Playing: {VALUES}",
-  "YouTubeTokenMissing": "Token of @bugsounet forum missing!",
+  "YouTubeTokenMissing": "Password missing!",
   "YouTubeTokenError": "[FATAL] Token YouTube: tokenYT.json missing!",
   "YouTubeLibraryError": "[FATAL] Error when loading: {VALUES} library",
   "YouTubeCredentialsError": "[FATAL] credentials.json missing!",

@@ -8,7 +8,6 @@ let log = () => { /* do nothing */ }
 
 module.exports = NodeHelper.create({
   start: function () {
-    console.log("[YT] " + require('./package.json').name + " Version:", require('./package.json').version , "rev:", require('./package.json').rev)
     this.config = {}
     this.Lib = []
     this.searchInit = false
@@ -27,10 +26,10 @@ module.exports = NodeHelper.create({
   },
 
   initialize: async function() {
+    console.log("[YT] " + require('./package.json').name + " Version:", require('./package.json').version , "rev:", require('./package.json').rev)
     var debug = (this.config.debug) ? this.config.debug : false
     if (this.config.debug) log = (...args) => { console.log("[YT]", ...args) }
-    log("Starting YouTube module...")
-    log("Config:", this.config)
+    if (this.config.token) console.warn("[YT] WARN: token is deprecated, please use password")
     if (this.config.useSearch) {
       log("Check credentials.json...")
       if (fs.existsSync(__dirname + "/credentials.json")) {
