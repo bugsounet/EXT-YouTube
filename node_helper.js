@@ -24,7 +24,6 @@ module.exports = NodeHelper.create({
 
   initialize: async function() {
     console.log("[YT] " + require('./package.json').name + " Version:", require('./package.json').version , "rev:", require('./package.json').rev)
-    var debug = (this.config.debug) ? this.config.debug : false
     if (this.config.debug) log = (...args) => { console.log("[YT]", ...args) }
     if (this.config.token) console.warn("[YT] WARN: token is deprecated, please use password")
     if (this.config.useSearch) {
@@ -77,17 +76,18 @@ module.exports = NodeHelper.create({
   YoutubeSearch: async function (query) {
     log("Search for:", query)
     try {
-      var results = await this.lib.YouTubeSearch.search(query, 1, this.lib)
-      var item = results.items[0]
-      var title = item.title
+      let results = await this.lib.YouTubeSearch.search(query, 1, this.lib)
+      let item = results.items[0]
+      //log("Results:", item)
+      let title = item.title
       let thumbnail = item.thumbnail
       let videoID = item.id
-      log(`Found YouTube Title: %s - videoID: %s`, title, videoID)
+      log("Found YouTube Title:", title, "videoID:", videoID)
       this.sendSocketNotification("YT_FOUND", { title: title, thumbnail: thumbnail })
       this.sendSocketNotification("YT_RESULT", videoID)
     } catch (e) {
       console.error("[YT] YouTube Search error: ", e.toString())
       this.sendSocketNotification("YT_SEARCH_ERROR")
     }
-  },
+  }
 })

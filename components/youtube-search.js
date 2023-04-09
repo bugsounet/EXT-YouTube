@@ -5,10 +5,10 @@
  **/
 
 const GetYoutubeInitData = async (url, axios) => {
-  var initdata = {};
+  var initdata = {}
   try {
-    const page = await axios.get(encodeURI(url));
-    const ytInitData = page.data.split("var ytInitialData =");
+    const page = await axios.get(encodeURI(url))
+    const ytInitData = page.data.split("var ytInitialData =")
     if (ytInitData && ytInitData.length > 1) {
       const data = ytInitData[1].split("</script>")[0].slice(0, -1)
 
