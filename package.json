@@ -1,11 +1,10 @@
 {
   "name": "EXT-YouTube",
-  "version": "1.1.0",
-  "rev": "230328",
+  "version": "2.0.0",
+  "rev": "230409",
   "description": "YouTube Player",
   "main": "EXT-YouTube.js",
   "scripts": {
-    "token": "installer/token.sh",
     "preinstall": "installer/preinstall.sh",
     "postinstall": "installer/postinstall.sh",
     "update": "installer/update.sh",
@@ -27,12 +26,9 @@
     "url": "https://forum.bugsounet.fr"
   },
   "dependencies": {
+    "axios": "^1.3.5",
     "check-node-version": "^4.2.1",
     "glob": "^9.3.2",
-    "he": "^1.2.0",
-    "minify": "^9.2.0",
-    "open": "^6.4.0",
-    "r-json": "^1.2.10",
-    "youtube-api": "^3.0.1"
+    "minify": "^9.2.0"
   }
 }

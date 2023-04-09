@@ -1,6 +1,6 @@
 //
-// Module : EXT-YouTube
-// @bugsounet 03/2023
+// Module : EXT-YouTube v2
+// @bugsounet 04/2023
 
 logYT = (...args) => { /* do nothing */ }
 
@@ -93,8 +93,8 @@ Module.register("EXT-YouTube", {
         if (this.config.fullscreen && this.config.displayHeader) {
           this.sendNotification("EXT_ALERT", {
             type: "information",
-            message: this.translate("YouTubeIsPlaying", { VALUES: payload }),
-            icon: "modules/EXT-YouTube/resources/YT.png",
+            message: this.translate("YouTubeIsPlaying", { VALUES: payload.title }),
+            icon: payload.thumbnail.url,
             timer: 6000,
             sound: "modules/EXT-YouTube/resources/YT-Launch.mp3"
           })
@@ -122,14 +122,6 @@ Module.register("EXT-YouTube", {
           message: this.translate("YouTubeFoundError"),
           icon: "modules/EXT-YouTube/resources/YT.png",
           timer: 5000,
-        })
-        break
-      case "YT_CREDENTIALS_MISSING":
-        this.sendNotification("EXT_ALERT", {
-          type: "error",
-          message: this.translate("YouTubeCredentialsError"),
-          icon: "modules/EXT-YouTube/resources/YT.png",
-          timer: 10000,
         })
         break
     }
@@ -204,7 +196,7 @@ Module.register("EXT-YouTube", {
         break
         case "Title:":
           this.YT.title = tag.slice(2).join(" ")
-          if (this.config.fullscreen && this.config.displayHeader) console.log(this.translate("YouTubeIsPlaying") + this.YT.title)
+          if (this.config.fullscreen && this.config.displayHeader) console.log("[YT]", this.translate("YouTubeIsPlaying", {VALUES:this.YT.title}))
           if (this.YT.title && !this.config.fullscreen && this.config.displayHeader) {
             let YTHeader = document.getElementById(this.identifier).getElementsByClassName("module-header")[0]
             YTHeader.innerText= this.YT.title

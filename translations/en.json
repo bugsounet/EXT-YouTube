@@ -11,6 +11,5 @@
   "YouTubeTokenMissing": "Password missing!",
   "YouTubeTokenError": "[FATAL] Token YouTube: tokenYT.json missing!",
   "YouTubeLibraryError": "[FATAL] Error when loading: {VALUES} library",
-  "YouTubeCredentialsError": "[FATAL] credentials.json missing!",
   "YouTubeFoundError": "YouTube Search return some errors!"
 }
