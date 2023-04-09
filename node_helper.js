@@ -26,16 +26,15 @@ module.exports = NodeHelper.create({
     console.log("[YT] " + require('./package.json').name + " Version:", require('./package.json').version , "rev:", require('./package.json').rev)
     if (this.config.debug) log = (...args) => { console.log("[YT]", ...args) }
     if (this.config.token) console.warn("[YT] WARN: token is deprecated, please use password")
-    if (this.config.useSearch) {
-      let bugsounet = await this.loadBugsounetLibrary()
-      if (bugsounet) {
-        console.error("[YT] Warning:", bugsounet, "library not loaded !")
-        console.error("[YT] Try to solve it with `npm install` in EXT-YouTube directory")
-        return
-      }
-      console.log("[YT] YouTube Search Function initilized.")
-      this.sendSocketNotification("YT_SEARCH_INITIALIZED")
+    let bugsounet = await this.loadBugsounetLibrary()
+    if (bugsounet) {
+      console.error("[YT] Warning:", bugsounet, "library not loaded !")
+      console.error("[YT] Try to solve it with `npm install` in EXT-YouTube directory")
+      return
     }
+    console.log("[YT] YouTube Search Function initilized.")
+    this.sendSocketNotification("YT_INITIALIZED")
+
     console.log("[YT] EXT-YouTube is Ready.")
   },
 

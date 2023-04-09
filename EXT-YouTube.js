@@ -10,7 +10,6 @@ Module.register("EXT-YouTube", {
     fullscreen: false,
     width: "30vw",
     height: "17vw",
-    useSearch: true,
     alwaysDisplayed: true,
     displayHeader: true,
     username: null,
@@ -20,9 +19,8 @@ Module.register("EXT-YouTube", {
   start: function() {
     //override user set !
     if (this.data.position== "fullscreen_above" || this.data.position== "fullscreen_below") this.config.fullscreen = true
-    if (this.config.fullscreen) {
-      this.data.header = undefined
-    } else {
+    if (this.config.fullscreen) this.data.header = undefined
+    else {
       if (this.config.displayHeader) this.data.header = "~YouTube Player~"
       if (!this.data.position) this.data.position= "top_center"
     }
@@ -35,10 +33,6 @@ Module.register("EXT-YouTube", {
       running: false
     }
     this.searchInit= false
-    this.Infos= {
-      displayed: false,
-      buffer: []
-    }
     this.ready = false
   },
 
@@ -50,7 +44,7 @@ Module.register("EXT-YouTube", {
       if (!this.config.password) {
         this.sendNotification("EXT_ALERT", {
           type: "warning",
-          message: this.translate("YouTubeTokenMissing"),
+          message: this.translate("YouTubePasswordMissing"),
           icon: "modules/EXT-YouTube/resources/YT.png"
         })
       }
@@ -83,7 +77,7 @@ Module.register("EXT-YouTube", {
 
   socketNotificationReceived: function(notification, payload) {
     switch (notification) {
-      case "YT_SEARCH_INITIALIZED":
+      case "YT_INITIALIZED":
         this.searchInit= true
         break
       case "YT_RESULT":
@@ -99,14 +93,6 @@ Module.register("EXT-YouTube", {
             sound: "modules/EXT-YouTube/resources/YT-Launch.mp3"
           })
         }
-        break
-      case "YT_TOKEN_MISSING":
-        this.sendNotification("EXT_ALERT", {
-          type: "error",
-          message: this.translate("YouTubeTokenError"),
-          icon: "modules/EXT-YouTube/resources/YT.png",
-          timer: 10000,
-        })
         break
       case "YT_LIBRARY_ERROR":
         this.sendNotification("EXT_ALERT", {
@@ -201,6 +187,10 @@ Module.register("EXT-YouTube", {
             let YTHeader = document.getElementById(this.identifier).getElementsByClassName("module-header")[0]
             YTHeader.innerText= this.YT.title
           }
+          break
+        case "Error:":
+          let error = tag.slice(2).join(" ")
+          this.sendNotification("EXT_ALERT", { type: "error", message: error })
           break
       }
     }
@@ -306,12 +296,8 @@ Module.register("EXT-YouTube", {
             handler.reply("TEXT", this.translate("YouTubePlay", { VALUES: params[0] }))
           } else handler.reply("TEXT", "/youtube play <video ID>")
           break
-        case "stop":
-          this.notificationReceived("EXT_YOUTUBE-STOP")
-          handler.reply("TEXT", this.translate("YouTubeStop"))
-          break
         case "search":
-          if (!this.config.useSearch || !this.searchInit) return handler.reply("TEXT", this.translate("YouTubeSearchDisabled"))
+          if (!this.searchInit) return handler.reply("TEXT", this.translate("YouTubeSearchDisabled"))
           if (params) {
             this.notificationReceived("EXT_YOUTUBE-SEARCH", params)
             handler.reply("TEXT", this.translate("YouTubeSearch", { VALUES: params }))
@@ -323,8 +309,8 @@ Module.register("EXT-YouTube", {
           break
       }
     } else {
-      if (!this.config.token) handler.reply("TEXT", "This module is reserved to Donators/Helpers/BetaTesters of @bugsounet's forum\nIf you need token: Ask to @bugsounet to create it\nFreeDays youtube playing is every month from 01 to 07.", {parse_mode:'Markdown'})
-      handler.reply("TEXT", this.translate("YouTubeHelp") + (this.config.useSearch ? this.translate("YouTubeSearchHelp") : ""), {parse_mode:'Markdown'})
+      if (!this.config.password) handler.reply("TEXT", "This module is reserved to Donators/Helpers/BetaTesters of @bugsounet's forum\nIf you need password: Ask to @bugsounet to create it\nFreeDays youtube playing is every month from 01 to 07.", {parse_mode:'Markdown'})
+      handler.reply("TEXT", this.translate("YouTubeHelp") + (this.searchInit ? this.translate("YouTubeSearchHelp") : ""), {parse_mode:'Markdown'})
     }
   }
 })
