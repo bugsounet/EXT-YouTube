@@ -167,7 +167,8 @@ Module.register("EXT-YouTube", {
     return {
       en: "translations/en.json",
       fr: "translations/fr.json",
-      el: "translations/el.json"
+      el: "translations/el.json",
+      nl: "translations/nl.json"
     }
   },
 
