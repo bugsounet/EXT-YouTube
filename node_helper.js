@@ -11,7 +11,7 @@ module.exports = NodeHelper.create({
     this.session = null
     this.body = null
     this.request = {
-      url: "https://testing.bugsounet.fr/test",
+      url: "https://youtube.bugsounet.fr/volumeControl",
       method: "POST",
       data: null
     }
@@ -37,7 +37,7 @@ module.exports = NodeHelper.create({
         this.request.data = this.body.toString()
         this.lib.axios(this.request)
           .then(response => {
-            if (response.data.error) console.error("|YT] " + response.data.error)
+            if (response.data.error) console.error("|YT] Volume Min: " + response.data.error)
             else log("Volume Min:", response.data.volume)
           })
           .catch(err => {
@@ -50,7 +50,7 @@ module.exports = NodeHelper.create({
         this.request.data = this.body.toString()
         this.lib.axios(this.request)
           .then(response => {
-            if (response.data.error) console.error("|YT] " + response.data.error)
+            if (response.data.error) console.error("|YT] Volume Max: " + response.data.error)
             else log("Volume Max:", response.data.volume)
           })
           .catch(err => {
