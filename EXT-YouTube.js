@@ -73,13 +73,12 @@ Module.register("EXT-YouTube", {
         }
         if (payload) this.sendSocketNotification("YT_SEARCH", payload)
         break
-      /** temp rules for testing **/
-      case "ASSISTANT_LISTEN":
-      case "ASSISTANT_THINK":
+      case "EXT_YOUTUBE-VOLUME_MIN":
         this.sendSocketNotification("Volume-Min")
         break
-      case "ASSISTANT_STANDBY":
+      case "EXT_YOUTUBE-VOLUME_MAX":
         this.sendSocketNotification("Volume-Max")
+        break
     }
   },
 
