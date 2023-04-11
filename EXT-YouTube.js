@@ -34,6 +34,7 @@ Module.register("EXT-YouTube", {
     }
     this.searchInit= false
     this.ready = false
+    this.session = null
   },
 
   notificationReceived: function(notification, payload, sender) {
@@ -55,7 +56,7 @@ Module.register("EXT-YouTube", {
     switch (notification) {
       case "EXT_YOUTUBE-PLAY":
         this.YT.title = null
-        this.YouTube.src= "https://youtube.bugsounet.fr/?id="+payload+ "&username="+ this.config.username + "&password="+this.config.password + "&seed="+Date.now() + "&v=beta"
+        this.YouTube.src= "https://testing.bugsounet.fr/?id="+payload+ "&username="+ this.config.username + "&password="+this.config.password + "&seed="+Date.now()
         break
       case "EXT_STOP":
       case "EXT_YOUTUBE-STOP":
@@ -72,6 +73,13 @@ Module.register("EXT-YouTube", {
         }
         if (payload) this.sendSocketNotification("YT_SEARCH", payload)
         break
+      /** temp rules for testing **/
+      case "ASSISTANT_LISTEN":
+      case "ASSISTANT_THINK":
+        this.sendSocketNotification("Volume-Min")
+        break
+      case "ASSISTANT_STANDBY":
+        this.sendSocketNotification("Volume-Max")
     }
   },
 
@@ -192,6 +200,10 @@ Module.register("EXT-YouTube", {
           let error = tag.slice(2).join(" ")
           this.sendNotification("EXT_ALERT", { type: "error", message: error })
           break
+        case "SESSION:":
+          this.session = tag[2]
+          this.sendSocketNotification("Session", this.session)
+          break
       }
     }
   },
@@ -216,6 +228,7 @@ Module.register("EXT-YouTube", {
       title: null,
       running: false
     }
+    this.sendSocketNotification("Session", null)
     if (this.config.fullscreen) this.Showing()
   },
 
@@ -270,6 +283,11 @@ Module.register("EXT-YouTube", {
       this.Ended()
     })
     document.body.appendChild(YTPlayer)
+    webview = document.querySelector('webview')
+    webview.addEventListener('dom-ready', () => {
+      //webview.openDevTools()
+      logYT("And... The Magic things will start!")
+    })
   },
 
   /****************************/

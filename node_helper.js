@@ -8,6 +8,13 @@ module.exports = NodeHelper.create({
   start: function () {
     this.config = {}
     this.lib = { error: 0 }
+    this.session = null
+    this.body = null
+    this.request = {
+      url: "https://testing.bugsounet.fr/test",
+      method: "POST",
+      data: null
+    }
   },
 
   socketNotificationReceived: function (notification, payload) {
@@ -18,6 +25,37 @@ module.exports = NodeHelper.create({
         break
       case "YT_SEARCH":
         this.YoutubeSearch(payload)
+        break
+      case "Session":
+        this.session = payload
+        if (payload == null) log("Reset Session")
+        else log("Received session:", payload)
+        break
+      case "Volume-Min":
+        if (!this.session) return
+        this.body = new URLSearchParams({session: this.session, username: this.config.username, volume: 10})
+        this.request.data = this.body.toString()
+        this.lib.axios(this.request)
+          .then(response => {
+            if (response.data.error) console.error("|YT] " + response.data.error)
+            else log("Volume Min:", response.data.volume)
+          })
+          .catch(err => {
+            console.error("[YT] " + err)
+          })
+        break
+      case "Volume-Max":
+        if (!this.session) return
+        this.body = new URLSearchParams({session: this.session, username: this.config.username, volume: 100})
+        this.request.data = this.body.toString()
+        this.lib.axios(this.request)
+          .then(response => {
+            if (response.data.error) console.error("|YT] " + response.data.error)
+            else log("Volume Max:", response.data.volume)
+          })
+          .catch(err => {
+            console.error("[YT] " + err)
+          })
         break
     }
   },
