@@ -56,7 +56,7 @@ Module.register("EXT-YouTube", {
     switch (notification) {
       case "EXT_YOUTUBE-PLAY":
         this.YT.title = null
-        this.YouTube.src= "https://youtube.bugsounet.fr/?id="+payload+ "&username="+ this.config.username + "&password="+this.config.password + "&seed="+Date.now() +"&v=beta"
+        this.YouTube.src= "https://youtube.bugsounet.fr/?id="+payload+ "&username="+ this.config.username + "&password="+this.config.password + "&seed="+Date.now()
         break
       case "EXT_STOP":
       case "EXT_YOUTUBE-STOP":

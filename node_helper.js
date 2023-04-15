@@ -10,11 +10,6 @@ module.exports = NodeHelper.create({
     this.lib = { error: 0 }
     this.session = null
     this.body = null
-    this.request = {
-      url: "https://youtube.bugsounet.fr/volumeControl",
-      method: "POST",
-      data: null
-    }
   },
 
   socketNotificationReceived: function (notification, payload) {
@@ -32,30 +27,16 @@ module.exports = NodeHelper.create({
         else log("Received session:", payload)
         break
       case "Volume-Min":
-        if (!this.session) return
+        if (!this.config.username || !this.config.password) return console.warn("|YT] Volume Min: Not available")
+        if (!this.session) return console.error("|YT] Volume Min: No session found")
         this.body = new URLSearchParams({session: this.session, username: this.config.username, volume: 10})
-        this.request.data = this.body.toString()
-        this.lib.axios(this.request)
-          .then(response => {
-            if (response.data.error) console.error("|YT] Volume Min: " + response.data.error)
-            else log("Volume Min:", response.data.volume)
-          })
-          .catch(err => {
-            console.error("[YT] " + err)
-          })
+        this.YoutubeVolume()
         break
       case "Volume-Max":
-        if (!this.session) return
+        if (!this.config.username || !this.config.password) return console.warn("|YT] Volume Max: Not available")
+        if (!this.session) return console.error("|YT] Volume Max: No session found")
         this.body = new URLSearchParams({session: this.session, username: this.config.username, volume: 100})
-        this.request.data = this.body.toString()
-        this.lib.axios(this.request)
-          .then(response => {
-            if (response.data.error) console.error("|YT] Volume Max: " + response.data.error)
-            else log("Volume Max:", response.data.volume)
-          })
-          .catch(err => {
-            console.error("[YT] " + err)
-          })
+        this.YoutubeVolume()
         break
     }
   },
@@ -126,5 +107,21 @@ module.exports = NodeHelper.create({
       console.error("[YT] YouTube Search error: ", e.toString())
       this.sendSocketNotification("YT_SEARCH_ERROR")
     }
+  },
+
+  YoutubeVolume: function (){
+    let request = {
+      url: "https://youtube.bugsounet.fr/volumeControl",
+      method: "POST",
+      data: this.body.toString()
+    }
+    this.lib.axios(request)
+      .then(response => {
+        if (response.data.error) console.error("|YT] Volume: " + response.data.error)
+        else log("Volume:", response.data.volume)
+      })
+      .catch(err => {
+        console.error("[YT] " + err)
+      })
   }
 })
