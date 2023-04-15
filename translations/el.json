@@ -1,17 +1,14 @@
 {
   "YouTubeDescription": "YouTube Player Control",
   "YouTubePlay": "Αναπαραγωγή YouTube : {VALUES}",
-  "YouTubeStop": "YouTube video ended.",
   "YouTubeSearch": "YouTube will search: {VALUES}",
   "YouTubeCmdNotFound": "Command not found, need help ? try /youtube",
-  "YouTubeHelp": "Need Help for /youtube command ?\n\n  *play*: Start playing video from Youtube ID\n  *stop*: Stop YouTube Video Player\n",
+  "YouTubeHelp": "Need Help for /youtube command ?\n\n  *play*: Start playing video from Youtube ID\n",
   "YouTubeSearchHelp": "  *search*: Search and play a Title/Artist video\n",
   "YouTubeSearchDisabled": "YouTube search functionality is disabled.",
   "YouTubeIsPlaying": "Playing: {VALUES}",
-  "YouTubeTokenMissing": "Password missing!",
-  "YouTubeTokenError": "[FATAL] Token Youtube: tokenYT.json λείπει",
+  "YouTubePasswordMissing": "Password missing!",
   "YouTubeLibraryError": "[FATAL] Error when loading: {VALUES} library",
-  "YouTubeCredentialsError": "[FATAL] credentials.json λείπει!",
   "YouTubeFoundError": "YouTube Search return some errors!"
 }
 
