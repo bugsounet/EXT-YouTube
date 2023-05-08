@@ -25,7 +25,6 @@ Module.register("EXT-YouTube", {
       if (!this.data.position) this.data.position= "top_center"
     }
     if (this.config.debug) logYT = (...args) => { console.log("[YT]", ...args) }
-    if (this.config.token) this.config.password = this.config.token
     this.YT = {
       status: false,
       ended: false,
@@ -42,14 +41,6 @@ Module.register("EXT-YouTube", {
       this.sendSocketNotification('INIT', this.config)
       if (this.config.fullscreen) this.preparePopup()
       this.YouTube = document.getElementById("EXT-YT")
-      if (this.config.token) {
-        this.sendNotification("EXT_ALERT", {
-          type: "warning",
-          message: "token will be deprecated. please replace token by password",
-          icon: "modules/EXT-YouTube/resources/YT.png",
-          timer: 30 * 1000
-        })
-      }
       if (!this.config.password) {
         this.sendNotification("EXT_ALERT", {
           type: "warning",

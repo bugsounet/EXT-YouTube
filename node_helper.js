@@ -44,7 +44,6 @@ module.exports = NodeHelper.create({
   initialize: async function() {
     console.log("[YT] " + require('./package.json').name + " Version:", require('./package.json').version , "rev:", require('./package.json').rev)
     if (this.config.debug) log = (...args) => { console.log("[YT]", ...args) }
-    if (this.config.token) console.warn("[YT] WARN: token is deprecated, please use password")
     let bugsounet = await this.loadBugsounetLibrary()
     if (bugsounet) {
       console.error("[YT] Warning:", bugsounet, "library not loaded !")
