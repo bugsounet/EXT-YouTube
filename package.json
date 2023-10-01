@@ -1,7 +1,7 @@
 {
   "name": "EXT-YouTube",
   "version": "2.1.2",
-  "rev": "230924",
+  "rev": "231001",
   "description": "YouTube Player",
   "main": "EXT-YouTube.js",
   "scripts": {
