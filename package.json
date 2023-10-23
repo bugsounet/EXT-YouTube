@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "axios": "^1.5.1",
-    "esbuild": "^0.19.4",
+    "esbuild": "^0.19.5",
     "glob": "^10.3.10"
   }
 }
