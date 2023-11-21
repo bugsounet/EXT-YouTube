@@ -26,7 +26,7 @@
     "url": "https://forum.bugsounet.fr"
   },
   "dependencies": {
-    "axios": "^1.6.1",
+    "axios": "^1.6.2",
     "esbuild": "^0.19.5",
     "glob": "^10.3.10"
   }
