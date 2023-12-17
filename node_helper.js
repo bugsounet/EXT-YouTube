@@ -116,7 +116,7 @@ module.exports = NodeHelper.create({
     }
     this.lib.axios(request)
       .then(response => {
-        if (response.data.error) console.error("|YT] Volume: " + response.data.error)
+        if (response.data.error) console.error("[YT] Volume: " + response.data.error)
         else log("Volume:", response.data.volume)
       })
       .catch(err => {
