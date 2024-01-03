@@ -1,7 +1,7 @@
 {
   "name": "EXT-YouTube",
-  "version": "2.1.4",
-  "rev": "231217",
+  "version": "2.2.0",
+  "rev": "240103",
   "description": "YouTube Player",
   "main": "EXT-YouTube.js",
   "scripts": {
@@ -26,8 +26,8 @@
     "url": "https://forum.bugsounet.fr"
   },
   "dependencies": {
-    "axios": "^1.6.2",
-    "esbuild": "^0.19.9",
+    "axios": "^1.6.3",
+    "esbuild": "^0.19.11",
     "glob": "^10.3.10"
   }
 }

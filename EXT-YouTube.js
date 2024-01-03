@@ -37,7 +37,7 @@ Module.register("EXT-YouTube", {
   },
 
   notificationReceived: function(notification, payload, sender) {
-    if (notification == "GW_READY" && sender.name == "Gateway") {
+    if (notification == "GA_READY" && sender.name == "MMM-GoogleAssistant") {
       this.sendSocketNotification('INIT', this.config)
       if (this.config.fullscreen) this.preparePopup()
       this.YouTube = document.getElementById("EXT-YT")
