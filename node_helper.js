@@ -2,15 +2,14 @@
 
 "use strict";
 var NodeHelper = require("node_helper");
+var YouTubeSearch = require("./components/youtube-search.js");
 
 let log = () => { /* do nothing */ };
 
 module.exports = NodeHelper.create({
   start () {
     this.config = {};
-    this.lib = { error: 0 };
     this.session = null;
-    this.body = null;
   },
 
   socketNotificationReceived (notification, payload) {
@@ -30,71 +29,30 @@ module.exports = NodeHelper.create({
       case "Volume-Min":
         if (!this.config.username || !this.config.password) return console.warn("|YT] Volume Min: Not available");
         if (!this.session) return console.error("|YT] Volume Min: No session found");
-        this.body = new URLSearchParams({ session: this.session, username: this.config.username, volume: 10 });
-        this.YoutubeVolume();
+        this.YoutubeVolume(10);
         break;
       case "Volume-Max":
         if (!this.config.username || !this.config.password) return console.warn("|YT] Volume Max: Not available");
         if (!this.session) return console.error("|YT] Volume Max: No session found");
-        this.body = new URLSearchParams({ session: this.session, username: this.config.username, volume: 100 });
-        this.YoutubeVolume();
+        this.YoutubeVolume(100);
         break;
     }
   },
 
   async initialize () {
-    console.log(`[YT] ${  require("./package.json").name  } Version:`, require("./package.json").version , "rev:", require("./package.json").rev);
+    console.log(`[YT] ${require("./package.json").name} Version:`, require("./package.json").version , "rev:", require("./package.json").rev);
     if (this.config.debug) log = (...args) => { console.log("[YT]", ...args); };
-    let bugsounet = await this.loadBugsounetLibrary();
-    if (bugsounet) {
-      console.error("[YT] Warning:", bugsounet, "library not loaded !");
-      console.error("[YT] Try to solve it with `npm install` in EXT-YouTube directory");
-      return;
-    }
     console.log("[YT] YouTube Search Function initilized.");
     this.sendSocketNotification("YT_INITIALIZED");
 
     console.log("[YT] EXT-YouTube is Ready.");
   },
 
-  /** Load require @busgounet library **/
-  /** It will not crash MM (black screen) **/
-  loadBugsounetLibrary () {
-    let libraries= [
-      // { "library to load" : "store library name" }
-      { "./components/youtube-search.js": "YouTubeSearch" },
-      { axios: "axios" }
-    ];
-    let errors = 0;
-    return new Promise((resolve) => {
-      libraries.forEach((library) => {
-        for (const [name, configValues] of Object.entries(library)) {
-          let libraryToLoad = name;
-          let libraryName = configValues;
-
-          try {
-            if (!this.lib[libraryName]) {
-              this.lib[libraryName] = require(libraryToLoad);
-              log("Loaded:", libraryToLoad, "->", `this.lib.${libraryName}`);
-            }
-          } catch (e) {
-            console.error("[YT]", libraryToLoad, "Loading error!" , e.toString());
-            this.sendSocketNotification("YT_LIBRARY_ERROR", libraryToLoad);
-            errors++;
-            this.lib.error = errors;
-          }
-        }
-      });
-      resolve(errors);
-      if (!errors) console.log("[YT] All libraries loaded!");
-    }); 
-  },
-
   /** YouTube Search **/
   async YoutubeSearch (query) {
     log("Search for:", query);
     try {
-      let results = await this.lib.YouTubeSearch.search(query, 1, this.lib);
+      let results = await YouTubeSearch.search(query, 1);
       let item = results.items[0];
       //log("Results:", item)
       let title = item.title;
@@ -109,19 +67,26 @@ module.exports = NodeHelper.create({
     }
   },
 
-  YoutubeVolume (){
-    let request = {
-      url: "https://youtube.bugsounet.fr/volumeControl",
-      method: "POST",
-      data: this.body.toString()
+  YoutubeVolume (volume) {
+    let body = {
+      session: this.session,
+      username: this.config.username,
+      volume: volume
     };
-    this.lib.axios(request)
-      .then((response) => {
-        if (response.data.error) console.error(`[YT] Volume: ${  response.data.error}`);
-        else log("Volume:", response.data.volume);
+    fetch("https://youtube.bugsounet.fr/volumeControl", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.error) console.error(`[YT] Volume: ${data.error}`);
+        else log(`Volume: ${data.volume}`);
       })
       .catch((err) => {
-        console.error(`[YT] ${  err}`);
+        console.error(`[YT] Volume: ${err}`);
       });
   }
 });

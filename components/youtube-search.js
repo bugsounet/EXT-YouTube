@@ -4,30 +4,32 @@
  * @bugsounet
  **/
 
-const GetYoutubeInitData = async (url, axios) => {
+const GetYoutubeInitData = async (url) => {
   var initdata = {};
   try {
-    const page = await axios.get(encodeURI(url));
-    const ytInitData = page.data.split("var ytInitialData =");
+    const request = await fetch(encodeURI(url));
+    const page = await request.text();
+    const ytInitData = page.split("var ytInitialData =");
+
     if (ytInitData && ytInitData.length > 1) {
       const data = ytInitData[1].split("</script>")[0].slice(0, -1);
 
       initdata = JSON.parse(data);
       return Promise.resolve({ initdata });
     } else {
-      console.error("cannot_get_init_data");
+      console.error("[YT] [Search] cannot_get_init_data");
       return Promise.reject("cannot_get_init_data");
     }
   } catch (ex) {
-    console.error(ex);
+    console.error("[YT] [Search] [GetYoutubeInitData]", ex);
     return Promise.reject(ex);
   }
 };
 
-const GetData = async ( keyword, limit = 0, lib ) => {
+const GetData = async ( keyword, limit = 0 ) => {
   let endpoint = `https://www.youtube.com/results?search_query=${keyword}&sp=EgIQAQ%3D%3D`;
   try {
-    const page = await GetYoutubeInitData(endpoint, lib.axios);
+    const page = await GetYoutubeInitData(endpoint);
 
     const sectionListRenderer = page.initdata.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer;
     let items = [];
@@ -45,7 +47,6 @@ const GetData = async ( keyword, limit = 0, lib ) => {
       items: itemsResult
     });
   } catch (ex) {
-    await console.error(ex);
     return await Promise.reject(ex);
   }
 };
@@ -61,6 +62,7 @@ const VideoRender = (json) => {
       thumbnail
     };
   } catch (ex) {
+    console.error("[YT] [Search] [VideoRender]", ex);
     throw ex;
   }
 };
