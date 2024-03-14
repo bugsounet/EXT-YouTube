@@ -248,14 +248,14 @@ Module.register("EXT-YouTube", {
   Hiding () {
     logYT("Hiding all modules");
     MM.getModules().exceptModule(this).enumerate((module) => {
-      module.hide(1000, { lockString: "EXT-YT_LOCKED" });
+      module.hide(1000, () => {}, { lockString: "EXT-YT_LOCKED" });
     });
   },
 
   Showing () {
     logYT("Showing all modules");
     MM.getModules().exceptModule(this).enumerate((module) => {
-      module.show(1000, { lockString: "EXT-YT_LOCKED" });
+      module.show(1000, () => {}, { lockString: "EXT-YT_LOCKED" });
     });
   },
 
