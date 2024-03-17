@@ -1,7 +1,7 @@
 {
   "name": "EXT-YouTube",
-  "version": "2.3.0",
-  "rev": "240308",
+  "version": "2.3.1",
+  "rev": "240316",
   "description": "YouTube Player",
   "main": "EXT-YouTube.js",
   "scripts": {
@@ -31,12 +31,12 @@
     "url": "https://forum.bugsounet.fr"
   },
   "dependencies": {
-    "esbuild": "^0.20.1",
+    "esbuild": "^0.20.2",
     "glob": "^10.3.10"
   },
   "devDependencies": {
     "@eslint/js": "^8.57.0",
-    "@stylistic/eslint-plugin": "^1.6.3",
+    "@stylistic/eslint-plugin": "^1.7.0",
     "eslint": "^8.57.0",
     "eslint-plugin-import": "^2.29.1"
   }
