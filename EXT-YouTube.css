@@ -1,8 +1,9 @@
 #EXT-YT_WINDOW {
-  width:100vw;
-  height:100vh;
+  width:30vw;
+  height:30vh;
   position: relative;
   border: none;
+  display: inline-block;
 }
 
 #EXT-YT_WINDOW.hidden {
