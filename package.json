@@ -1,12 +1,12 @@
 {
   "name": "EXT-YouTube",
-  "version": "2.3.2",
-  "rev": "240421",
+  "version": "2.4.0",
+  "rev": "240701",
   "description": "YouTube Player",
   "main": "EXT-YouTube.js",
   "scripts": {
     "preinstall": "installer/preinstall.sh",
-    "postinstall": "installer/postinstall.sh -m -b",
+    "postinstall": "installer/postinstall.sh -m",
     "update": "installer/update.sh",
     "reset": "git reset --hard",
     "clean": "rm -rf node_modules package-lock.json",
@@ -28,15 +28,18 @@
     "url": "https://github.com/bugsounet/EXT-YouTube"
   },
   "bugs": {
-    "url": "https://forum.bugsounet.fr"
+    "url": "https://github.com/bugsounet/EXT-YouTube/issues"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "dependencies": {
-    "esbuild": "^0.20.2",
-    "glob": "^10.3.12"
+    "esbuild": "^0.22.0",
+    "glob": "^10.4.2"
   },
   "devDependencies": {
     "@eslint/js": "^8.57.0",
-    "@stylistic/eslint-plugin": "^1.7.2",
+    "@stylistic/eslint-plugin": "^1.8.1",
     "eslint": "^8.57.0",
     "eslint-plugin-import": "^2.29.1"
   }
