@@ -42,7 +42,7 @@ Module.register("EXT-YouTube", {
       if (this.config.fullscreen) this.preparePopup();
       this.YouTube = document.getElementById("EXT-YT");
       if (!this.config.password) {
-        this.sendNotification("EXT_ALERT", {
+        this.sendNotification("GA_ALERT", {
           type: "warning",
           message: this.translate("YouTubePasswordMissing"),
           icon: "modules/EXT-YouTube/resources/YT.png"
@@ -63,7 +63,7 @@ Module.register("EXT-YouTube", {
         break;
       case "EXT_YOUTUBE-SEARCH":
         if (!this.searchInit) {
-          this.sendNotification("EXT_ALERT", {
+          this.sendNotification("GA_ALERT", {
             type: "error",
             message: this.translate("YouTubeSearchDisabled"),
             icon: "modules/EXT-YouTube/resources/YT.png"
@@ -91,7 +91,7 @@ Module.register("EXT-YouTube", {
         break;
       case "YT_FOUND":
         if (this.config.fullscreen && this.config.displayHeader) {
-          this.sendNotification("EXT_ALERT", {
+          this.sendNotification("GA_ALERT", {
             type: "information",
             message: this.translate("YouTubeIsPlaying", { VALUES: payload.title }),
             icon: payload.thumbnail.url,
@@ -101,7 +101,7 @@ Module.register("EXT-YouTube", {
         }
         break;
       case "YT_LIBRARY_ERROR":
-        this.sendNotification("EXT_ALERT", {
+        this.sendNotification("GA_ALERT", {
           type: "error",
           message: this.translate("YouTubeLibraryError", { VALUES: payload }),
           icon: "modules/EXT-YouTube/resources/YT.png",
@@ -109,7 +109,7 @@ Module.register("EXT-YouTube", {
         });
         break;
       case "YT_SEARCH_ERROR":
-        this.sendNotification("EXT_ALERT", {
+        this.sendNotification("GA_ALERT", {
           type: "error",
           message: this.translate("YouTubeFoundError"),
           icon: "modules/EXT-YouTube/resources/YT.png",
@@ -149,7 +149,7 @@ Module.register("EXT-YouTube", {
     });
     YTPlayer.addEventListener("did-fail-load", (message) => {
       console.error("[YT][Error]", message.errorDescription);
-      this.sendNotification("EXT_ALERT", { type: "error", message: `Youtube Error: ${  message.errorDescription}` }); 
+      this.sendNotification("GA_ALERT", { type: "error", message: `Youtube Error: ${  message.errorDescription}` }); 
       this.Ended();
     });
 
@@ -199,7 +199,7 @@ Module.register("EXT-YouTube", {
           break;
         case "Error:":
           let error = tag.slice(2).join(" ");
-          this.sendNotification("EXT_ALERT", { type: "error", message: error });
+          this.sendNotification("GA_ALERT", { type: "error", message: error });
           break;
         case "SESSION:":
           this.session = tag[2];
@@ -280,7 +280,7 @@ Module.register("EXT-YouTube", {
     });
     YTPlayer.addEventListener("did-fail-load", (message) => {
       console.error("[YT][Error]", message.errorDescription);
-      this.sendNotification("EXT_ALERT", { type: "error", message: `Youtube Error: ${  message.errorDescription}` }); 
+      this.sendNotification("GA_ALERT", { type: "error", message: `Youtube Error: ${  message.errorDescription}` }); 
       this.Ended();
     });
     document.body.appendChild(YTPlayer);
