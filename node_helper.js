@@ -2,7 +2,7 @@
 
 "use strict";
 var NodeHelper = require("node_helper");
-var YouTubeSearch = require("./components/youtube-search.js");
+var YouTubeSearch = require("./components/youtube-search");
 
 let log = () => { /* do nothing */ };
 
@@ -13,7 +13,7 @@ module.exports = NodeHelper.create({
   },
 
   socketNotificationReceived (notification, payload) {
-    switch(notification) {
+    switch (notification) {
       case "INIT":
         this.config = payload;
         this.initialize();
@@ -40,7 +40,7 @@ module.exports = NodeHelper.create({
   },
 
   async initialize () {
-    console.log(`[YT] ${require("./package.json").name} Version:`, require("./package.json").version , "rev:", require("./package.json").rev);
+    console.log(`[YT] ${require("./package.json").name} Version:`, require("./package.json").version, "rev:", require("./package.json").rev);
     if (this.config.debug) log = (...args) => { console.log("[YT]", ...args); };
     console.log("[YT] YouTube Search Function initilized.");
     this.sendSocketNotification("YT_INITIALIZED");
