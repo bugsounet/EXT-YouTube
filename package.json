@@ -1,7 +1,7 @@
 {
   "name": "EXT-YouTube",
-  "version": "2.5.0",
-  "rev": "241029",
+  "version": "2.5.1",
+  "rev": "241119",
   "description": "YouTube Player",
   "main": "EXT-YouTube.js",
   "scripts": {
@@ -35,11 +35,11 @@
   },
   "dependencies": {
     "esbuild": "^0.24.0",
-    "glob": "^10.4.5"
+    "glob": "^11.0.0"
   },
   "devDependencies": {
-    "@stylistic/eslint-plugin": "^2.9.0",
-    "eslint": "^9.13.0",
+    "@stylistic/eslint-plugin": "^2.11.0",
+    "eslint": "^9.15.0",
     "eslint-plugin-import": "^2.31.0"
   }
 }

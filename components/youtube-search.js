@@ -26,7 +26,7 @@ const GetYoutubeInitData = async (url) => {
   }
 };
 
-const GetData = async ( keyword, limit = 0 ) => {
+const GetData = async (keyword, limit = 0) => {
   let endpoint = `https://www.youtube.com/results?search_query=${keyword}&sp=EgIQAQ%3D%3D`;
   try {
     const page = await GetYoutubeInitData(endpoint);

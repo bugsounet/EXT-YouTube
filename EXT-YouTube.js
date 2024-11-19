@@ -2,7 +2,7 @@
 // Module : EXT-YouTube v2
 // @bugsounet 04/2023
 
-logYT = (...args) => { /* do nothing */ };
+var logYT = () => { /* do nothing */ };
 
 Module.register("EXT-YouTube", {
   defaults: {
@@ -22,7 +22,7 @@ Module.register("EXT-YouTube", {
     if (this.config.fullscreen) this.data.header = undefined;
     else {
       if (this.config.displayHeader) this.data.header = "~YouTube Player~";
-      if (!this.data.position) this.data.position= "top_center";
+      if (!this.data.position) this.data.position = "top_center";
     }
     if (this.config.debug) logYT = (...args) => { console.log("[YT]", ...args); };
     this.YT = {
@@ -31,7 +31,7 @@ Module.register("EXT-YouTube", {
       title: null,
       running: false
     };
-    this.searchInit= false;
+    this.searchInit = false;
     this.ready = false;
     this.session = null;
   },
@@ -55,7 +55,7 @@ Module.register("EXT-YouTube", {
     switch (notification) {
       case "EXT_YOUTUBE-PLAY":
         this.YT.title = null;
-        this.YouTube.src= `https://youtube.bugsounet.fr/?id=${payload }&username=${ this.config.username  }&password=${this.config.password  }&seed=${Date.now()}`;
+        this.YouTube.src = `https://youtube.bugsounet.fr/?id=${payload}&username=${this.config.username}&password=${this.config.password}&seed=${Date.now()}`;
         break;
       case "EXT_STOP":
       case "EXT_YOUTUBE-STOP":
@@ -84,7 +84,7 @@ Module.register("EXT-YouTube", {
   socketNotificationReceived (notification, payload) {
     switch (notification) {
       case "YT_INITIALIZED":
-        this.searchInit= true;
+        this.searchInit = true;
         break;
       case "YT_RESULT":
         this.notificationReceived("EXT_YOUTUBE-PLAY", payload);
@@ -130,7 +130,7 @@ Module.register("EXT-YouTube", {
     if (!this.config.alwaysDisplayed && !this.config.fullscreen) this.hide(0, { lockString: "EXT-YT_LOCKED" });
     wrapper.style.width = this.config.width;
     wrapper.style.height = this.config.height;
-    var YTLogo= document.createElement("img");
+    var YTLogo = document.createElement("img");
     YTLogo.id = "EXT-YT_LOGO";
     YTLogo.src = "modules/EXT-YouTube/resources/YouTube-Logo.png";
     wrapper.appendChild(YTLogo);
@@ -149,7 +149,7 @@ Module.register("EXT-YouTube", {
     });
     YTPlayer.addEventListener("did-fail-load", (message) => {
       console.error("[YT][Error]", message.errorDescription);
-      this.sendNotification("GA_ALERT", { type: "error", message: `Youtube Error: ${  message.errorDescription}` }); 
+      this.sendNotification("GA_ALERT", { type: "error", message: `Youtube Error: ${message.errorDescription}` });
       this.Ended();
     });
 
@@ -157,8 +157,8 @@ Module.register("EXT-YouTube", {
     return wrapper;
   },
 
-  getStyles (){
-    return [ this.file("EXT-YouTube.css") ];
+  getStyles () {
+    return [this.file("EXT-YouTube.css")];
   },
 
   getTranslations () {
@@ -178,27 +178,27 @@ Module.register("EXT-YouTube", {
     if (tag[0] === "[YT]") {
       switch (tag[1]) {
         case "Status:":
-          this.YT.status= tag[2] === "true" ? true : false;
+          this.YT.status = tag[2] === "true" ? true : false;
           if (this.YT.status && !this.YT.ended) {
             if (this.YT.running) return;
             this.Started();
           }
           break;
         case "Ended:":
-          this.YT.ended= tag[2] === "true" ? true: false;
+          this.YT.ended = tag[2] === "true" ? true : false;
           if (this.YT.ended) this.Ended();
           if (this.YT.running) this.YT.running = false;
           break;
         case "Title:":
           this.YT.title = tag.slice(2).join(" ");
-          if (this.config.fullscreen && this.config.displayHeader) console.log("[YT]", this.translate("YouTubeIsPlaying", { VALUES:this.YT.title }));
+          if (this.config.fullscreen && this.config.displayHeader) console.log("[YT]", this.translate("YouTubeIsPlaying", { VALUES: this.YT.title }));
           if (this.YT.title && !this.config.fullscreen && this.config.displayHeader) {
             let YTHeader = document.getElementById(this.identifier).getElementsByClassName("module-header")[0];
-            YTHeader.innerText= this.YT.title;
+            YTHeader.innerText = this.YT.title;
           }
           break;
         case "Error:":
-          let error = tag.slice(2).join(" ");
+          var error = tag.slice(2).join(" ");
           this.sendNotification("GA_ALERT", { type: "error", message: error });
           break;
         case "SESSION:":
@@ -214,11 +214,11 @@ Module.register("EXT-YouTube", {
     var YTLogo = document.getElementById("EXT-YT_LOGO");
     if (!this.config.fullscreen && this.config.displayHeader) {
       let YTHeader = document.getElementById(this.identifier).getElementsByClassName("module-header")[0];
-      YTHeader.innerHTML= this.data.header;
+      YTHeader.innerHTML = this.data.header;
     }
 
     YTPlayer.classList.add("hidden");
-    YTPlayer.src= `about:blank?&seed=${Date.now()}`;
+    YTPlayer.src = `about:blank?&seed=${Date.now()}`;
     if (!this.config.fullscreen) YTLogo.classList.remove("hidden");
     if (!this.config.alwaysDisplayed && !this.config.fullscreen) this.hide(0, { lockString: "EXT-YT_LOCKED" });
     this.broadcastStatus("END");
@@ -239,7 +239,7 @@ Module.register("EXT-YouTube", {
     var YTLogo = document.getElementById("EXT-YT_LOGO");
 
     if (!this.config.alwaysDisplayed && !this.config.fullscreen) this.show(0, { lockString: "EXT-YT_LOCKED" });
-    if (!this.config.fullscreen) YTLogo.className= "hidden";
+    if (!this.config.fullscreen) YTLogo.className = "hidden";
     YTPlayer.classList.remove("hidden");
     this.broadcastStatus("START");
     this.YT.running = true;
@@ -280,11 +280,11 @@ Module.register("EXT-YouTube", {
     });
     YTPlayer.addEventListener("did-fail-load", (message) => {
       console.error("[YT][Error]", message.errorDescription);
-      this.sendNotification("GA_ALERT", { type: "error", message: `Youtube Error: ${  message.errorDescription}` }); 
+      this.sendNotification("GA_ALERT", { type: "error", message: `Youtube Error: ${message.errorDescription}` });
       this.Ended();
     });
     document.body.appendChild(YTPlayer);
-    webview = document.querySelector("webview");
+    var webview = document.querySelector("webview");
     webview.addEventListener("dom-ready", () => {
       //webview.openDevTools()
       logYT("And... The Magic things will start!");
@@ -328,8 +328,8 @@ Module.register("EXT-YouTube", {
           break;
       }
     } else {
-      if (!this.config.password) handler.reply("TEXT", "This module is reserved to Donators/Helpers/BetaTesters of @bugsounet's forum\nIf you need password: Ask to @bugsounet to create it\nFreeDays youtube playing is every month from 01 to 07.", { parse_mode:"Markdown" });
-      handler.reply("TEXT", this.translate("YouTubeHelp") + (this.searchInit ? this.translate("YouTubeSearchHelp") : ""), { parse_mode:"Markdown" });
+      if (!this.config.password) handler.reply("TEXT", "This module is reserved to Donators/Helpers/BetaTesters of @bugsounet's forum\nIf you need password: Ask to @bugsounet to create it\nFreeDays youtube playing is every month from 01 to 07.", { parse_mode: "Markdown" });
+      handler.reply("TEXT", this.translate("YouTubeHelp") + (this.searchInit ? this.translate("YouTubeSearchHelp") : ""), { parse_mode: "Markdown" });
     }
   }
 });
